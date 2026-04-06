@@ -1,0 +1,31 @@
+{
+  "version": "0.2",
+  "language": "en,fr",
+  "allowCompoundWords": true,
+  "words": [
+    "wght",
+    "opsz",
+    "Space_Grotesk",
+    "Manrope",
+    "SCHOTT",
+    "ROBAX",
+    "Vanlife",
+    "Upsell",
+    "Bento",
+    "Inox",
+    "corten",
+    "Pinterest",
+    "Chambery",
+    "Chambery",
+    "Chambéry"
+  ],
+  "ignorePaths": [
+    "index.html",
+    "boutique.html",
+    "fiche.html",
+    "journal.html",
+    "contact.html",
+    "histoire.html",
+    "panier.html"
+  ]
+}

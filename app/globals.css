@@ -1,0 +1,174 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #fcf9f5;
+  --surface: #ffffff;
+  --surface-muted: #f6f3ee;
+  --surface-soft: #efeae1;
+  --surface-strong: #e6dfd2;
+  --primary: #24231f;
+  --secondary: #7b5d3f;
+  --on-surface: #282821;
+  --on-surface-muted: #6b665c;
+  --outline: #d9d2c6;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+html.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+body {
+  background: var(--background);
+  color: var(--on-surface);
+  font-family: "Manrope", "Avenir Next", "Segoe UI", sans-serif;
+}
+
+::selection {
+  background: #ddccb4;
+  color: #1f1f1b;
+}
+
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-headline;
+  }
+
+  a {
+    @apply transition-colors duration-200;
+  }
+}
+
+@layer components {
+  .page-shell {
+    @apply mx-auto w-full max-w-7xl px-6 md:px-10;
+  }
+
+  .page-section {
+    @apply py-20 md:py-28;
+  }
+
+  .eyebrow {
+    @apply font-label text-[11px] font-bold uppercase tracking-[0.24em] text-secondary;
+  }
+
+  .page-title {
+    @apply font-headline text-5xl font-bold uppercase tracking-[-0.06em] md:text-7xl lg:text-8xl;
+  }
+
+  .section-title {
+    @apply font-headline text-4xl font-bold tracking-[-0.05em] md:text-6xl;
+  }
+
+  .section-copy {
+    @apply max-w-2xl text-base leading-7 text-on-surface-muted md:text-lg;
+  }
+
+  .surface-panel {
+    @apply rounded-none border border-outline bg-surface shadow-atmospheric;
+  }
+
+  .button-primary {
+    @apply inline-flex items-center justify-center gap-3 bg-primary px-6 py-4 font-label text-xs font-bold uppercase tracking-[0.2em] text-white transition hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .button-secondary {
+    @apply inline-flex items-center justify-center gap-3 border border-outline bg-transparent px-6 py-4 font-label text-xs font-bold uppercase tracking-[0.2em] text-on-surface transition hover:border-secondary hover:text-secondary disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .button-link {
+    @apply inline-flex items-center gap-2 font-label text-xs font-bold uppercase tracking-[0.2em] text-secondary;
+  }
+
+  .nav-link {
+    @apply font-label text-[11px] font-bold uppercase tracking-[0.18em] text-on-surface-muted hover:text-on-surface;
+  }
+
+  .nav-link-active {
+    @apply text-on-surface;
+  }
+
+  .input-field {
+    @apply w-full border-0 border-b border-outline bg-transparent px-0 py-4 text-base text-on-surface outline-none transition placeholder:text-on-surface-muted focus:border-secondary focus:ring-0;
+  }
+
+  .gradient-mask {
+    background: linear-gradient(120deg, rgba(25, 25, 22, 0.72), rgba(25, 25, 22, 0.08));
+  }
+}
+
+[data-media-reveal] {
+  transform-origin: center center;
+  will-change: clip-path, opacity, transform;
+}
+
+[data-section-transition] {
+  will-change: clip-path, opacity, transform;
+}
+
+[data-scrub-y],
+[data-scrub-x],
+[data-scrub-scale],
+[data-float-panel] {
+  will-change: transform;
+}
+
+.c-scrollbar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 60;
+  width: 12px;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.c-scrollbar:hover {
+  transform: scaleX(1.35);
+}
+
+.c-scrollbar_thumb {
+  position: absolute;
+  top: 0;
+  right: 2px;
+  width: 7px;
+  border-radius: 999px;
+  background: rgba(36, 35, 31, 0.38);
+}
+
+html.lenis .c-scrollbar {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
