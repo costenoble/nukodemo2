@@ -1,35 +1,70 @@
 "use client";
 
-import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 import { CheckoutButton } from "@/components/checkout-button";
 import { useCart } from "@/components/cart-provider";
+import { Link } from "@/i18n/navigation";
+import { getFumiProductById } from "@/lib/fumisterie";
 import { formatPrice } from "@/lib/format";
-import { getProductById } from "@/lib/products";
+import { getAccessoryById, getProductById } from "@/lib/products";
+
+function getItemDetails(item) {
+  if (item.isAccessory) {
+    const accessory = getAccessoryById(item.productId);
+    if (accessory) {
+      return {
+        id: item.productId,
+        name: accessory.name,
+        subtitle: accessory.description,
+        image: accessory.image,
+        category: "Accessoire",
+        unitPrice: item.unitPrice ?? accessory.price
+      };
+    }
+    const fumi = getFumiProductById(item.productId);
+    if (fumi) {
+      return {
+        id: item.productId,
+        name: fumi.name,
+        subtitle: item.configLabel ?? fumi.ref,
+        image: "/images/nomad-detail.jpg",
+        category: "Fumisterie",
+        unitPrice: item.unitPrice ?? fumi.price
+      };
+    }
+    return null;
+  }
+  const product = getProductById(item.productId);
+  return product
+    ? {
+        id: item.productId,
+        name: product.name,
+        subtitle: item.configLabel ?? product.subtitle,
+        image: product.heroImage,
+        category: product.category,
+        unitPrice: item.unitPrice ?? product.price
+      }
+    : null;
+}
 
 export function CartPage() {
-  const { hasHydrated, items, removeItem, setQuantity, subtotal } = useCart();
+  const { hasHydrated, items, removeItem, setQuantity, subtotal, getItemPrice } = useCart();
+  const t = useTranslations("cart");
 
   const detailedItems = items
     .map((item) => {
-      const product = getProductById(item.productId);
-
-      if (!product) {
-        return null;
-      }
-
-      return {
-        ...item,
-        product
-      };
+      const details = getItemDetails(item);
+      if (!details) return null;
+      return { ...item, details };
     })
     .filter(Boolean);
 
   if (!hasHydrated) {
     return (
       <div className="page-shell page-section">
-        <p className="eyebrow mb-4">Panier</p>
-        <h1 className="page-title">Chargement...</h1>
+        <p className="eyebrow mb-4">{t("eyebrow")}</p>
+        <h1 className="page-title">{t("loading")}</h1>
       </div>
     );
   }
@@ -37,114 +72,127 @@ export function CartPage() {
   return (
     <div className="page-shell page-section space-y-12">
       <div className="space-y-4" data-hero-copy="">
-        <p className="eyebrow" data-reveal-item="">
-          Panier
-        </p>
-        <h1 className="page-title" data-reveal-item="">
-          Votre panier
-        </h1>
+        <p className="eyebrow" data-reveal-item="">{t("eyebrow")}</p>
+        <h1 className="page-title" data-reveal-item="">{t("title")}</h1>
       </div>
 
       {!detailedItems.length ? (
         <div className="surface-panel p-10" data-reveal="">
-          <h2 className="font-headline text-4xl font-bold tracking-[-0.05em]">Aucun produit pour l'instant</h2>
-          <p className="mt-4 max-w-xl text-sm leading-7 text-on-surface-muted">
-            Retrouvez le Nomad 01 dans la boutique pour consulter sa fiche complete et demarrer
-            votre commande.
-          </p>
-          <Link className="button-primary mt-8" href="/boutique/nomad-01">
-            Retour a la fiche produit
+          <h2 className="font-headline text-4xl font-bold tracking-[-0.05em]">{t("emptyTitle")}</h2>
+          <p className="mt-4 max-w-xl text-sm leading-7 text-on-surface-muted">{t("emptyDesc")}</p>
+          <Link className="button-primary mt-8" href="/produit/nomad-01">
+            {t("emptyCta")}
           </Link>
         </div>
       ) : (
         <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr]">
           <section className="space-y-6" data-reveal-stagger="">
-            {detailedItems.map(({ product, quantity }) => (
-              <article
-                key={product.id}
-                className="surface-panel overflow-hidden p-6"
-                data-reveal-item=""
-              >
-                <div className="grid gap-6 md:grid-cols-[220px_1fr]">
-                  <img
-                    alt={product.name}
-                    className="h-full w-full object-cover"
-                    data-media-reveal=""
-                    data-scrub-scale="1.1,1"
-                    data-scrub-y="-4,8"
-                    src={product.heroImage}
-                  />
+            {detailedItems.map((item) => {
+              const { details, quantity, configLabel } = item;
+              const lineTotal = (item.unitPrice ?? details.unitPrice) * quantity;
 
-                  <div className="flex flex-col justify-between gap-6">
-                    <div className="space-y-3">
-                      <p className="eyebrow">{product.category}</p>
-                      <div className="flex flex-wrap items-start justify-between gap-4">
-                        <div>
-                          <h2 className="font-headline text-3xl font-bold tracking-[-0.05em]">
-                            {product.name}
-                          </h2>
-                          <p className="mt-2 max-w-xl text-sm leading-7 text-on-surface-muted">
-                            {product.subtitle}
-                          </p>
-                        </div>
-                        <div className="font-headline text-3xl font-bold tracking-[-0.05em]">
-                          {formatPrice(product.price * quantity)}
+              return (
+                <article
+                  key={`${details.id}-${configLabel ?? "default"}`}
+                  className="surface-panel overflow-hidden p-6"
+                  data-reveal-item=""
+                >
+                  <div className="grid gap-6 md:grid-cols-[180px_1fr]">
+                    <img
+                      alt={details.name}
+                      className="h-48 w-full object-cover md:h-full"
+                      src={details.image}
+                    />
+
+                    <div className="flex flex-col justify-between gap-6">
+                      <div className="space-y-3">
+                        <p className="eyebrow">{details.category}</p>
+                        <div className="flex flex-wrap items-start justify-between gap-4">
+                          <div>
+                            <h2 className="font-headline text-3xl font-bold tracking-[-0.05em]">
+                              {details.name}
+                            </h2>
+                            <p className="mt-2 max-w-xl text-sm leading-6 text-on-surface-muted">
+                              {details.subtitle}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <div className="font-headline text-3xl font-bold tracking-[-0.05em]">
+                              {formatPrice(lineTotal)}
+                            </div>
+                            {quantity > 1 && (
+                              <div className="text-xs text-on-surface-muted">
+                                {formatPrice(details.unitPrice)} / u.
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div className="flex flex-wrap items-center justify-between gap-4">
-                      <div className="flex items-center border border-outline">
+                      <div className="flex flex-wrap items-center justify-between gap-4">
+                        <div className="flex items-center border border-outline">
+                          <button
+                            className="px-4 py-3 text-sm font-bold"
+                            onClick={() => setQuantity(details.id, quantity - 1, configLabel)}
+                            type="button"
+                          >
+                            -
+                          </button>
+                          <span className="min-w-14 px-4 py-3 text-center font-headline text-lg font-bold">
+                            {quantity}
+                          </span>
+                          <button
+                            className="px-4 py-3 text-sm font-bold"
+                            onClick={() => setQuantity(details.id, quantity + 1, configLabel)}
+                            type="button"
+                          >
+                            +
+                          </button>
+                        </div>
+
                         <button
-                          className="px-4 py-3 text-sm font-bold"
-                          onClick={() => setQuantity(product.id, quantity - 1)}
+                          className="button-secondary"
+                          onClick={() => removeItem(details.id, configLabel)}
                           type="button"
                         >
-                          -
-                        </button>
-                        <span className="min-w-14 px-4 py-3 text-center font-headline text-lg font-bold">
-                          {quantity}
-                        </span>
-                        <button
-                          className="px-4 py-3 text-sm font-bold"
-                          onClick={() => setQuantity(product.id, quantity + 1)}
-                          type="button"
-                        >
-                          +
+                          {t("remove")}
                         </button>
                       </div>
-
-                      <button
-                        className="button-secondary"
-                        onClick={() => removeItem(product.id)}
-                        type="button"
-                      >
-                        Supprimer
-                      </button>
                     </div>
                   </div>
-                </div>
-              </article>
-            ))}
+                </article>
+              );
+            })}
           </section>
 
           <aside className="surface-panel h-fit p-8" data-float-panel="" data-reveal="">
-            <p className="eyebrow mb-4">Recapitulatif</p>
-            <div className="space-y-4 text-sm leading-7 text-on-surface-muted">
+            <p className="eyebrow mb-4">{t("summaryEyebrow")}</p>
+            <div className="space-y-3 text-sm leading-7 text-on-surface-muted">
+              {detailedItems.map((item) => (
+                <div
+                  key={`${item.details.id}-${item.configLabel ?? "default"}`}
+                  className="flex items-start justify-between gap-4"
+                >
+                  <span className="flex-1">
+                    {item.details.name}
+                    {item.quantity > 1 && ` x${item.quantity}`}
+                  </span>
+                  <span className="shrink-0 font-medium text-on-surface">
+                    {formatPrice((item.unitPrice ?? item.details.unitPrice) * item.quantity)}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-4 space-y-4 border-t border-outline pt-4 text-sm leading-7 text-on-surface-muted">
               <div className="flex items-center justify-between">
-                <span>Sous-total</span>
-                <span className="font-headline text-xl font-bold text-on-surface">
-                  {formatPrice(subtotal)}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span>Livraison</span>
-                <span className="font-headline text-xl font-bold text-on-surface">Offerte</span>
+                <span>{t("shipping")}</span>
+                <span className="font-headline text-xl font-bold text-on-surface">{t("shippingFree")}</span>
               </div>
               <div className="border-t border-outline pt-4">
                 <div className="flex items-center justify-between">
                   <span className="font-headline text-2xl font-bold uppercase tracking-[-0.04em] text-on-surface">
-                    Total
+                    {t("total")}
                   </span>
                   <span className="font-headline text-3xl font-bold tracking-[-0.05em] text-on-surface">
                     {formatPrice(subtotal)}
@@ -155,10 +203,7 @@ export function CartPage() {
 
             <CheckoutButton className="mt-8 w-full" />
 
-            <p className="mt-4 text-sm leading-7 text-on-surface-muted">
-              Une fois la commande validee, vous recevez un e-mail de confirmation avec le
-              recapitulatif et les prochaines etapes.
-            </p>
+            <p className="mt-4 text-sm leading-7 text-on-surface-muted">{t("confirmNote")}</p>
           </aside>
         </div>
       )}

@@ -2,7 +2,8 @@
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
-import { allProducts, getProductById } from "@/lib/products";
+import { getFumiProductById } from "@/lib/fumisterie";
+import { allProducts, getAccessoryById, getProductById } from "@/lib/products";
 
 const CART_STORAGE_KEY = "hearth-cart";
 const CartContext = createContext(null);
@@ -13,11 +14,30 @@ function sanitizeItems(items) {
   }
 
   return items
-    .map((item) => ({
-      productId: item?.productId,
-      quantity: Math.floor(Number(item?.quantity || 0))
-    }))
-    .filter((item) => getProductById(item.productId) && item.quantity > 0);
+    .map((item) => {
+      const isProduct = Boolean(getProductById(item?.productId));
+      const isAccessory = Boolean(getAccessoryById(item?.productId));
+      const isFumi = Boolean(getFumiProductById(item?.productId));
+      if (!isProduct && !isAccessory && !isFumi) return null;
+      const quantity = Math.floor(Number(item?.quantity || 0));
+      if (quantity <= 0) return null;
+      return {
+        productId: item.productId,
+        quantity,
+        unitPrice: typeof item.unitPrice === "number" ? item.unitPrice : undefined,
+        configLabel: typeof item.configLabel === "string" ? item.configLabel : undefined,
+        isAccessory: Boolean(item.isAccessory)
+      };
+    })
+    .filter(Boolean);
+}
+
+function getItemPrice(item) {
+  if (typeof item.unitPrice === "number") return item.unitPrice;
+  const product = getProductById(item.productId);
+  if (product) return product.price;
+  const accessory = getAccessoryById(item.productId);
+  return accessory?.price ?? 0;
 }
 
 export function CartProvider({ children }) {
@@ -36,57 +56,75 @@ export function CartProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    if (!hasHydrated) {
-      return;
-    }
-
+    if (!hasHydrated) return;
     window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
   }, [hasHydrated, items]);
 
   const value = useMemo(() => {
-    const addItem = (productId, quantity = 1) => {
+    const addItem = (productId, quantity = 1, options = {}) => {
       const safeQuantity = Math.max(1, Math.floor(Number(quantity) || 1));
 
       setItems((currentItems) => {
-        const existingItem = currentItems.find((entry) => entry.productId === productId);
+        const key = options.configLabel
+          ? `${productId}::${options.configLabel}`
+          : productId;
+        const existingItem = currentItems.find(
+          (e) => (e.configLabel ? `${e.productId}::${e.configLabel}` : e.productId) === key
+        );
+
+        const newEntry = {
+          productId,
+          quantity: safeQuantity,
+          ...(options.unitPrice !== undefined && { unitPrice: options.unitPrice }),
+          ...(options.configLabel && { configLabel: options.configLabel }),
+          ...(options.isAccessory && { isAccessory: true })
+        };
 
         if (!existingItem) {
-          return [...currentItems, { productId, quantity: safeQuantity }];
+          return [...currentItems, newEntry];
         }
 
-        return currentItems.map((entry) =>
-          entry.productId === productId
+        return currentItems.map((entry) => {
+          const entryKey = entry.configLabel
+            ? `${entry.productId}::${entry.configLabel}`
+            : entry.productId;
+          return entryKey === key
             ? { ...entry, quantity: entry.quantity + safeQuantity }
-            : entry
-        );
+            : entry;
+        });
       });
     };
 
-    const setQuantity = (productId, quantity) => {
+    const setQuantity = (productId, quantity, configLabel) => {
       const safeQuantity = Math.floor(Number(quantity) || 0);
-
       setItems((currentItems) =>
         currentItems
-          .map((entry) =>
-            entry.productId === productId ? { ...entry, quantity: safeQuantity } : entry
-          )
+          .map((entry) => {
+            const matches = entry.productId === productId &&
+              (configLabel ? entry.configLabel === configLabel : !entry.configLabel);
+            return matches ? { ...entry, quantity: safeQuantity } : entry;
+          })
           .filter((entry) => entry.quantity > 0)
       );
     };
 
-    const removeItem = (productId) => {
-      setItems((currentItems) => currentItems.filter((entry) => entry.productId !== productId));
+    const removeItem = (productId, configLabel) => {
+      setItems((currentItems) =>
+        currentItems.filter((entry) => {
+          if (entry.productId !== productId) return true;
+          if (configLabel) return entry.configLabel !== configLabel;
+          return Boolean(entry.configLabel);
+        })
+      );
     };
 
-    const clearCart = () => {
-      setItems([]);
-    };
+    const clearCart = () => setItems([]);
 
     const count = items.reduce((sum, item) => sum + item.quantity, 0);
-    const subtotal = items.reduce((sum, item) => {
-      const product = getProductById(item.productId);
-      return sum + (product?.price || 0) * item.quantity;
-    }, 0);
+    const subtotal = items.reduce(
+      (sum, item) => sum + getItemPrice(item) * item.quantity,
+      0
+    );
 
     return {
       items,
@@ -97,7 +135,8 @@ export function CartProvider({ children }) {
       clearCart,
       count,
       subtotal,
-      availableProducts: allProducts
+      availableProducts: allProducts,
+      getItemPrice
     };
   }, [hasHydrated, items]);
 
@@ -106,10 +145,6 @@ export function CartProvider({ children }) {
 
 export function useCart() {
   const value = useContext(CartContext);
-
-  if (!value) {
-    throw new Error("useCart must be used within a CartProvider.");
-  }
-
+  if (!value) throw new Error("useCart must be used within a CartProvider.");
   return value;
 }

@@ -1,4 +1,4 @@
-import { getProductById } from "@/lib/products";
+import { getAccessoryById, getProductById } from "@/lib/products";
 import { getBaseUrl, getStripe } from "@/lib/stripe";
 
 const allowedCountries = ["FR", "BE", "CH", "DE", "ES", "IT", "LU", "NL", "PT"];
@@ -14,7 +14,7 @@ export async function POST(request) {
 
     const validatedItems = items
       .map((item) => {
-        const product = getProductById(item?.productId);
+        const product = getProductById(item?.productId) ?? getAccessoryById(item?.productId);
         const parsedQuantity = Number(item?.quantity);
         const quantity =
           Number.isFinite(parsedQuantity) && parsedQuantity > 0
@@ -25,9 +25,16 @@ export async function POST(request) {
           return null;
         }
 
+        const unitPrice =
+          typeof item?.unitPrice === "number" && item.unitPrice > 0
+            ? item.unitPrice
+            : product.price;
+
         return {
           product,
-          quantity
+          quantity,
+          unitPrice,
+          configLabel: typeof item?.configLabel === "string" ? item.configLabel : null
         };
       })
       .filter(Boolean);
@@ -82,23 +89,25 @@ export async function POST(request) {
       metadata: {
         orderNumber,
         cartSummary: validatedItems
-          .map((item) => `${item.product.name} x${item.quantity}`)
+          .map((item) => {
+            const label = item.configLabel ? ` (${item.configLabel})` : "";
+            return `${item.product.name}${label} x${item.quantity}`;
+          })
           .join(" | ")
       },
-      line_items: validatedItems.map(({ product, quantity }) => {
-        const productImage = product.heroImage.startsWith("http")
-          ? product.heroImage
-          : `${baseUrl}${product.heroImage}`;
+      line_items: validatedItems.map(({ product, quantity, unitPrice, configLabel }) => {
+        const rawImage = product.heroImage ?? product.image ?? "";
+        const productImage = rawImage.startsWith("http") ? rawImage : `${baseUrl}${rawImage}`;
 
         return {
           quantity,
           price_data: {
             currency: "eur",
-            unit_amount: product.price,
+            unit_amount: unitPrice,
             product_data: {
-              name: product.name,
-              description: product.subtitle,
-              images: [productImage],
+              name: configLabel ? `${product.name} — ${configLabel}` : product.name,
+              description: product.subtitle ?? product.description,
+              ...(productImage && { images: [productImage] }),
               metadata: {
                 productId: product.id
               }
