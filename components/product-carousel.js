@@ -1,0 +1,97 @@
+"use client";
+
+import { useRef } from "react";
+import { useTranslations } from "next-intl";
+
+import { Link } from "@/i18n/navigation";
+import { formatPrice } from "@/lib/format";
+
+export function ProductCarousel({ products }) {
+  const tc = useTranslations("common");
+  const trackRef = useRef(null);
+
+  function scroll(dir) {
+    const el = trackRef.current;
+    if (!el) return;
+    const card = el.querySelector("[data-card]");
+    const width = card ? card.offsetWidth + 24 : 600;
+    el.scrollBy({ left: dir * width, behavior: "smooth" });
+  }
+
+  return (
+    <div className="relative">
+      <div
+        ref={trackRef}
+        className="flex gap-6 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory"
+        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+      >
+        {products.map((product) => (
+          <Link
+            key={product.id}
+            data-card
+            className="group relative flex-none w-[85vw] max-w-[760px] snap-start overflow-hidden border border-outline bg-surface"
+            href={`/produit/${product.slug}`}
+          >
+            <div className="overflow-hidden">
+              <img
+                alt={product.name}
+                className="h-[55vw] max-h-[500px] w-full object-cover transition-transform duration-700 group-hover:scale-103"
+                src={product.heroImage}
+              />
+            </div>
+            <div className="flex items-end justify-between gap-6 p-8 md:p-10">
+              <div>
+                <h3 className="font-headline text-5xl font-bold uppercase tracking-[-0.06em] md:text-6xl">
+                  {product.name}
+                </h3>
+                <p className="mt-3 max-w-xs text-sm font-light leading-7 text-on-surface-muted">
+                  {product.subtitle}
+                </p>
+              </div>
+              <div className="shrink-0 text-right">
+                <p className="font-headline text-3xl font-bold tracking-[-0.05em]">
+                  {formatPrice(product.preorderPrice)}
+                </p>
+                <p className="mt-1 text-xs text-on-surface-muted line-through">
+                  {formatPrice(product.price)}
+                </p>
+                <div className="mt-4 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-secondary transition-colors group-hover:text-primary">
+                  {tc("seeProduct")}
+                  <svg className="h-3 w-3 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </Link>
+        ))}
+      </div>
+
+      <div className="mt-6 flex items-center gap-3">
+        <button
+          className="border border-outline p-3 transition hover:border-primary"
+          onClick={() => scroll(-1)}
+          type="button"
+          aria-label="Précédent"
+        >
+          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path d="M19 12H5M12 19l-7-7 7-7" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} />
+          </svg>
+        </button>
+        <button
+          className="border border-outline p-3 transition hover:border-primary"
+          onClick={() => scroll(1)}
+          type="button"
+          aria-label="Suivant"
+        >
+          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} />
+          </svg>
+        </button>
+        <span className="text-xs text-on-surface-muted">
+          {products.length} {products.length > 1 ? "modèles" : "modèle"}
+        </span>
+      </div>
+    </div>
+  );
+}

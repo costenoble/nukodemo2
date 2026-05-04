@@ -15,8 +15,16 @@ export default async function ContactPage({ params }) {
   const t = await getTranslations("contact");
 
   return (
+    <>
+      <section className="border-b border-outline bg-surface-muted">
+        <div className="page-shell py-20 md:py-28">
+          <p className="eyebrow mb-4">{t("eyebrow")}</p>
+          <h1 className="page-title max-w-4xl">{t("title")}</h1>
+          <p className="section-copy mt-6">{t("desc")}</p>
+        </div>
+      </section>
+
     <div className="page-shell page-section space-y-16">
-      <SectionHeading eyebrow={t("eyebrow")} title={t("title")} description={t("desc")} />
 
       <div className="grid gap-10 lg:grid-cols-[1fr_0.9fr]">
         <section className="surface-panel p-8 md:p-10">
@@ -60,5 +68,6 @@ export default async function ContactPage({ params }) {
         </div>
       </section>
     </div>
+    </>
   );
 }

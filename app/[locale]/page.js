@@ -2,7 +2,10 @@ import { setRequestLocale } from "next-intl/server";
 import { getTranslations } from "next-intl/server";
 
 import { Link } from "@/i18n/navigation";
+import { AudienceAccordion } from "@/components/audience-accordion";
+import { HomeSplit } from "@/components/home-split";
 import { PreorderGauge } from "@/components/preorder-gauge";
+import { ProductCarousel } from "@/components/product-carousel";
 import { formatPrice } from "@/lib/format";
 import { allProducts } from "@/lib/products";
 import { getPreorderCount } from "@/lib/preorder-count";
@@ -45,162 +48,38 @@ export default async function HomePage({ params }) {
           </div>
         </div>
 
-        {/* ── SPLIT ENTRY ── */}
-        <div className="relative grid md:grid-cols-2">
-          <Link
-            className="group flex flex-col justify-between border-t border-white/20 bg-white/5 p-10 backdrop-blur-sm transition-all duration-500 hover:bg-white/12 md:border-r"
-            href="/particulier"
-          >
-            <div>
-              <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.28em] text-[#dcbf96]">
-                {t("splitParticularEyebrow")}
-              </p>
-              <h2 className="font-headline text-3xl font-bold uppercase tracking-[-0.05em] text-white md:text-4xl">
-                {t("splitParticularTitle").split("\n").map((line, i) => (
-                  <span key={i}>{i > 0 && <br />}{line}</span>
-                ))}
-              </h2>
-              <p className="mt-4 max-w-sm text-sm leading-7 text-white/60">
-                {t("splitParticularDesc")}
-              </p>
-            </div>
-            <div className="mt-8 flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.2em] text-white/80 transition-colors duration-300 group-hover:text-[#dcbf96]">
-              {t("splitParticularCta")}
-              <svg className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} />
-              </svg>
-            </div>
-          </Link>
-
-          <Link
-            className="group flex flex-col justify-between border-t border-white/20 bg-[#141410]/60 p-10 backdrop-blur-sm transition-all duration-500 hover:bg-[#141410]/80"
-            href="/professionnel"
-          >
-            <div>
-              <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.28em] text-[#dcbf96]">
-                {t("splitProEyebrow")}
-              </p>
-              <h2 className="font-headline text-3xl font-bold uppercase tracking-[-0.05em] text-white md:text-4xl">
-                {t("splitProTitle").split("\n").map((line, i) => (
-                  <span key={i}>{i > 0 && <br />}{line}</span>
-                ))}
-              </h2>
-              <p className="mt-4 max-w-sm text-sm leading-7 text-white/60">
-                {t("splitProDesc")}
-              </p>
-            </div>
-            <div className="mt-8 flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.2em] text-white/80 transition-colors duration-300 group-hover:text-[#dcbf96]">
-              {t("splitProCta")}
-              <svg className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} />
-              </svg>
-            </div>
-          </Link>
-        </div>
       </section>
 
-      {/* ── PREORDER STRIP ── */}
-      <section className="border-b border-outline bg-[#1d1c18] py-8 text-white">
-        <div className="page-shell">
-          <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-            <div className="flex-1">
-              <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-[#dcbf96]">
-                {t("stripEyebrow")}
-              </p>
-              <p className="mt-1 text-sm leading-6 text-white/70">{t("stripText")}</p>
-            </div>
-            <Link
-              className="shrink-0 inline-flex items-center gap-3 border border-[#dcbf96] bg-transparent px-6 py-4 text-[11px] font-bold uppercase tracking-[0.2em] text-[#dcbf96] transition hover:bg-[#dcbf96] hover:text-[#141410]"
-              href="/precommande"
-            >
-              {t("stripCta")}
-            </Link>
-          </div>
-          <div className="mt-6 max-w-lg">
-            <PreorderGauge compact reserved={reserved} total={100} />
-          </div>
-        </div>
-      </section>
+      <HomeSplit />
 
       {/* ── PRODUITS ── */}
-      <section className="page-shell page-section">
-        <div className="mb-14 flex flex-col gap-3">
-          <p className="eyebrow">{t("collectionEyebrow")}</p>
-          <h2 className="section-title max-w-2xl">{t("collectionTitle")}</h2>
-          <p className="section-copy">{t("collectionDesc")}</p>
+      <section className="page-section overflow-hidden">
+        <div className="page-shell mb-12 flex items-end justify-between gap-6">
+          <div className="space-y-4">
+            <p className="eyebrow">{t("collectionEyebrow")}</p>
+            <h2 className="section-title max-w-xl">{t("collectionTitle")}</h2>
+          </div>
+          <p className="hidden max-w-xs text-right text-sm font-light leading-7 text-on-surface-muted md:block">
+            {t("collectionDesc")}
+          </p>
         </div>
-
-        <div className="grid gap-8 lg:grid-cols-2">
-          {allProducts.map((product) => (
-            <Link
-              key={product.id}
-              className="group relative overflow-hidden border border-outline bg-surface"
-              href={`/produit/${product.slug}`}
-            >
-              <div className="overflow-hidden">
-                <img
-                  alt={product.name}
-                  className="h-80 w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  src={product.cardImage}
-                />
-              </div>
-              <div className="p-8">
-                <p className="eyebrow mb-3">{product.category}</p>
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <h3 className="font-headline text-4xl font-bold tracking-[-0.05em]">{product.name}</h3>
-                    <p className="mt-3 max-w-sm text-sm leading-7 text-on-surface-muted">{product.subtitle}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-headline text-3xl font-bold tracking-[-0.05em]">{formatPrice(product.preorderPrice)}</p>
-                    <p className="mt-1 text-xs text-on-surface-muted">{tc("launchPrice")}</p>
-                    <p className="text-xs text-on-surface-muted line-through">{formatPrice(product.price)}</p>
-                  </div>
-                </div>
-                <div className="mt-6 grid grid-cols-4 gap-px overflow-hidden border border-outline bg-outline">
-                  {product.stats.map((stat) => (
-                    <div key={stat.label} className="bg-surface-muted p-4">
-                      <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-on-surface-muted">{stat.label}</p>
-                      <p className="mt-1 font-headline text-xl font-bold tracking-[-0.04em]">{stat.value}</p>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-6 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-secondary transition-colors duration-300 group-hover:text-primary">
-                  {tc("seeProduct")}
-                  <svg className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} />
-                  </svg>
-                </div>
-              </div>
-            </Link>
-          ))}
+        <div className="pl-6 md:pl-10">
+          <ProductCarousel products={allProducts} />
         </div>
       </section>
 
       {/* ── VALEURS ── */}
       <section className="border-y border-outline bg-surface-muted">
-        <div className="page-shell page-section grid gap-14 lg:grid-cols-2 lg:items-center">
-          <div className="space-y-6">
+        <div className="page-shell page-section grid gap-20 lg:grid-cols-2 lg:items-start">
+          <div className="space-y-8">
             <p className="eyebrow">{t("valuesEyebrow")}</p>
             <h2 className="section-title">{t("valuesTitle").split("\n").map((line, i) => (<span key={i}>{i > 0 && <br />}{line}</span>))}</h2>
             <p className="section-copy">{t("valuesDesc")}</p>
-            <blockquote className="border-l-2 border-secondary pl-5 font-headline text-2xl font-bold tracking-[-0.04em]">
+            <blockquote className="border-l-2 border-secondary pl-6 font-headline text-2xl font-light italic tracking-[-0.02em] text-on-surface-muted">
               {t("valuesQuote")}
             </blockquote>
           </div>
-          <div className="grid grid-cols-2 gap-px overflow-hidden border border-outline bg-outline">
-            {[
-              { value: "100 %", key: "statManual" },
-              { value: "82–84 %", key: "statEfficiency" },
-              { value: "Ø 150", key: "statFlue" },
-              { value: "EN 13240", key: "statNorm" }
-            ].map((stat) => (
-              <div key={stat.key} className="bg-background p-8">
-                <p className="font-headline text-3xl font-bold tracking-[-0.05em]">{stat.value}</p>
-                <p className="mt-2 text-sm text-on-surface-muted">{t(stat.key)}</p>
-              </div>
-            ))}
-          </div>
+          <AudienceAccordion locale={locale} />
         </div>
       </section>
 
@@ -214,16 +93,16 @@ export default async function HomePage({ params }) {
           </div>
           <Link className="button-secondary shrink-0" href="/fumisterie">{t("fumiCta")}</Link>
         </div>
-        <div className="mt-12 grid gap-6 md:grid-cols-4">
+        <div className="mt-14 grid gap-px overflow-hidden border border-outline bg-outline md:grid-cols-4">
           {[
             { labelKey: "fumiPipes", descKey: "fumiPipesDesc" },
             { labelKey: "fumiPassages", descKey: "fumiPassagesDesc" },
             { labelKey: "fumiProtections", descKey: "fumiProtectionsDesc" },
             { labelKey: "fumiCharcoal", descKey: "fumiCharcoalDesc" }
           ].map((item) => (
-            <div key={item.labelKey} className="border border-outline bg-surface-muted p-6">
+            <div key={item.labelKey} className="bg-background px-7 py-8">
               <h3 className="font-headline text-2xl font-bold tracking-[-0.04em]">{t(item.labelKey)}</h3>
-              <p className="mt-2 text-sm leading-6 text-on-surface-muted">{t(item.descKey)}</p>
+              <p className="mt-3 text-sm font-light leading-7 text-on-surface-muted">{t(item.descKey)}</p>
             </div>
           ))}
         </div>
@@ -260,6 +139,29 @@ export default async function HomePage({ params }) {
             >
               {t("preorderCta")}
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── PREORDER STRIP ── */}
+      <section className="border-b border-outline bg-[#1d1c18] py-10 text-white">
+        <div className="page-shell">
+          <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+            <div className="flex-1">
+              <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-[#dcbf96]">
+                {t("stripEyebrow")}
+              </p>
+              <p className="mt-1 text-sm leading-6 text-white/70">{t("stripText")}</p>
+            </div>
+            <Link
+              className="shrink-0 border border-[#dcbf96] px-6 py-4 text-[11px] font-bold uppercase tracking-[0.2em] text-[#dcbf96] transition hover:bg-[#dcbf96] hover:text-[#141410]"
+              href="/precommande"
+            >
+              {t("stripCta")}
+            </Link>
+          </div>
+          <div className="mt-8 max-w-lg">
+            <PreorderGauge compact reserved={reserved} total={100} />
           </div>
         </div>
       </section>

@@ -17,14 +17,22 @@ export default async function JournalPage({ params }) {
   const readLabel = locale === "en" ? "Read article" : "Lire l'article";
 
   return (
+    <>
+      <section className="border-b border-outline bg-surface-muted">
+        <div className="page-shell py-20 md:py-28">
+          <p className="eyebrow mb-4">Journal</p>
+          <h1 className="page-title max-w-4xl">
+            {locale === "en" ? "Chronicles of compact warmth" : "Chroniques de chaleur compacte"}
+          </h1>
+          <p className="section-copy mt-6">
+            {locale === "en"
+              ? "Installation advice, uses, materials and inspiration around the compact fire."
+              : "Conseils d'installation, usages, matières et inspirations autour du feu compact."}
+          </p>
+        </div>
+      </section>
+
     <div className="page-shell page-section space-y-16">
-      <SectionHeading
-        eyebrow="Journal"
-        title={locale === "en" ? "Chronicles of compact warmth" : "Chroniques de chaleur compacte"}
-        description={locale === "en"
-          ? "Installation advice, uses, materials and inspiration around the compact fire."
-          : "Conseils d'installation, usages, matières et inspirations autour du feu compact."}
-      />
 
       <Link
         className="block overflow-hidden border border-outline bg-surface-muted transition-transform duration-300 hover:-translate-y-1"
@@ -61,5 +69,6 @@ export default async function JournalPage({ params }) {
         ))}
       </section>
     </div>
+    </>
   );
 }
