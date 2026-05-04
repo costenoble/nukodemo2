@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 
 import { Link } from "@/i18n/navigation";
 import { AudienceAccordion } from "@/components/audience-accordion";
+import { FumiList } from "@/components/fumi-list";
 import { HomeSplit } from "@/components/home-split";
 import { PreorderGauge } from "@/components/preorder-gauge";
 import { ProductCarousel } from "@/components/product-carousel";
@@ -93,19 +94,12 @@ export default async function HomePage({ params }) {
           </div>
           <Link className="button-secondary shrink-0" href="/fumisterie">{t("fumiCta")}</Link>
         </div>
-        <div className="mt-14 grid gap-px overflow-hidden border border-outline bg-outline md:grid-cols-4">
-          {[
-            { labelKey: "fumiPipes", descKey: "fumiPipesDesc" },
-            { labelKey: "fumiPassages", descKey: "fumiPassagesDesc" },
-            { labelKey: "fumiProtections", descKey: "fumiProtectionsDesc" },
-            { labelKey: "fumiCharcoal", descKey: "fumiCharcoalDesc" }
-          ].map((item) => (
-            <div key={item.labelKey} className="bg-background px-7 py-8">
-              <h3 className="font-headline text-2xl font-bold tracking-[-0.04em]">{t(item.labelKey)}</h3>
-              <p className="mt-3 text-sm font-light leading-7 text-on-surface-muted">{t(item.descKey)}</p>
-            </div>
-          ))}
-        </div>
+        <FumiList items={[
+          { num: "01", label: t("fumiPipes"), desc: t("fumiPipesDesc") },
+          { num: "02", label: t("fumiPassages"), desc: t("fumiPassagesDesc") },
+          { num: "03", label: t("fumiProtections"), desc: t("fumiProtectionsDesc") },
+          { num: "04", label: t("fumiCharcoal"), desc: t("fumiCharcoalDesc") },
+        ]} />
       </section>
 
       {/* ── LOGIQUE PRECOMMANDE ── */}
