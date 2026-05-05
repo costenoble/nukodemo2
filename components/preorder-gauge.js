@@ -11,18 +11,18 @@ export function PreorderGauge({ reserved = 84, total = 100, compact = false }) {
     return (
       <div className="space-y-2">
         <div className="flex items-baseline justify-between gap-2 text-sm">
-          <span className="font-bold text-[#dcbf96]">
+          <span className="font-bold text-on-surface">
             {reserved} / {total} {t("reserved")}
           </span>
-          <span className="text-white/50">{remaining} {t("remaining")}</span>
+          <span className="text-on-surface-muted">{remaining} {t("remaining")}</span>
         </div>
-        <div className="h-1.5 w-full overflow-hidden bg-white/20">
+        <div className="h-1 w-full overflow-hidden bg-outline">
           <div
-            className="h-full bg-[#dcbf96] transition-all duration-1000"
+            className="h-full bg-primary transition-all duration-1000"
             style={{ width: `${pct}%` }}
           />
         </div>
-        <p className="text-xs text-white/50">{t("launchMessage")}</p>
+        <p className="text-xs text-on-surface-muted">{t("launchMessage")}</p>
       </div>
     );
   }

@@ -39,7 +39,7 @@ export default async function PrecommandePage({ params }) {
   return (
     <>
       <section className="border-b border-outline bg-[#1d1c18] text-white">
-        <div className="page-shell py-16 md:py-24">
+        <div className="page-shell pt-32 pb-16 md:pt-40 md:pb-24">
           <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.28em] text-[#dcbf96]">
             {t("eyebrow")}
           </p>

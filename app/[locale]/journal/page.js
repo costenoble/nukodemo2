@@ -19,7 +19,7 @@ export default async function JournalPage({ params }) {
   return (
     <>
       <section className="border-b border-outline bg-surface-muted">
-        <div className="page-shell py-20 md:py-28">
+        <div className="page-shell pt-36 pb-20 md:pt-44 md:pb-28">
           <p className="eyebrow mb-4">Journal</p>
           <h1 className="page-title max-w-4xl">
             {locale === "en" ? "Chronicles of compact warmth" : "Chroniques de chaleur compacte"}

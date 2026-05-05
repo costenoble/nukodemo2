@@ -23,7 +23,7 @@ export default async function ParticulierPage({ params }) {
   return (
     <>
       <section className="border-b border-outline bg-surface-muted">
-        <div className="page-shell py-20 md:py-28">
+        <div className="page-shell pt-36 pb-20 md:pt-44 md:pb-28">
           <p className="eyebrow mb-4">{t("eyebrow")}</p>
           <h1 className="page-title max-w-3xl">{t("heroTitle")}</h1>
           <p className="section-copy mt-6 max-w-xl">{t("heroDesc")}</p>

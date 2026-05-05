@@ -7,7 +7,6 @@ import { FumiList } from "@/components/fumi-list";
 import { HomeSplit } from "@/components/home-split";
 import { PreorderGauge } from "@/components/preorder-gauge";
 import { ProductCarousel } from "@/components/product-carousel";
-import { formatPrice } from "@/lib/format";
 import { allProducts } from "@/lib/products";
 import { getPreorderCount } from "@/lib/preorder-count";
 
@@ -15,50 +14,58 @@ export default async function HomePage({ params }) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("home");
-  const tc = await getTranslations("common");
   const reserved = getPreorderCount();
-
-  const [nomad, cabin] = allProducts;
 
   return (
     <>
       {/* ── HERO ── */}
-      <section className="relative flex min-h-screen flex-col overflow-hidden bg-[#141410]">
+      <section className="relative flex min-h-screen flex-col overflow-hidden bg-black">
         <img
           alt="Poele NUKO en situation"
-          className="absolute inset-0 h-full w-full object-cover opacity-50"
+          className="absolute inset-0 h-full w-full object-cover opacity-40"
           src="/images/hearth-home.jpg"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#141410]/60 via-transparent to-[#141410]/80" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" />
 
-        <div className="relative flex flex-1 flex-col items-center justify-center px-6 py-32 text-center text-white">
-          <p className="mb-6 text-[13px] font-bold uppercase tracking-[0.28em] text-[#dcbf96]">
+        <div className="relative flex flex-1 flex-col justify-end px-6 pb-20 pt-24 text-white md:px-10 md:pb-28 md:pt-28">
+          <p className="mb-6 text-[11px] font-bold uppercase tracking-[0.28em] text-white/50">
             {t("heroBadge")}
           </p>
-          <h1 className="font-headline text-6xl font-bold uppercase leading-[0.88] tracking-[-0.07em] md:text-8xl lg:text-[9rem]">
+          <h1 className="page-title max-w-5xl text-white">
             {t("heroTitle").split("\n").map((line, i) => (
               <span key={i}>{i > 0 && <br />}{line}</span>
             ))}
           </h1>
-          <p className="mx-auto mt-8 max-w-xl text-xl font-medium leading-8 text-white/85">
-            {t("heroSubtitle")}
-          </p>
-          <div className="mt-6 inline-flex items-center gap-2 rounded-none border border-[#dcbf96]/40 bg-[#dcbf96]/10 px-5 py-3 text-sm text-[#dcbf96]">
-            <span className="h-2 w-2 animate-pulse rounded-full bg-[#dcbf96]" />
+          <div className="mt-10 flex flex-wrap items-center gap-4">
+            <Link
+              className="border border-white px-7 py-4 text-[11px] font-bold uppercase tracking-[0.2em] text-white transition hover:bg-white hover:text-black"
+              href="/precommande"
+            >
+              {t("preorderCta")}
+            </Link>
+            <Link
+              className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/60 transition hover:text-white"
+              href="/particulier"
+            >
+              {t("collectionEyebrow")} →
+            </Link>
+          </div>
+          <div className="mt-8 inline-flex items-center gap-2 text-xs text-white/40">
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-white/40" />
             {t("preorderLive")}
           </div>
         </div>
-
       </section>
 
+      {/* ── DEUX PANNEAUX ── */}
       <HomeSplit />
 
-      {/* ── PRODUITS ── */}
-      <section className="page-section overflow-hidden">
-        <div className="page-shell mb-12 flex items-end justify-between gap-6">
-          <div className="space-y-4">
-            <p className="eyebrow">{t("collectionEyebrow")}</p>
-            <h2 className="section-title max-w-xl">{t("collectionTitle")}</h2>
+      {/* ── COLLECTION ── */}
+      <section className="py-20 md:py-32">
+        <div className="page-shell mb-10 flex items-end justify-between gap-6">
+          <div>
+            <p className="eyebrow mb-3">{t("collectionEyebrow")}</p>
+            <h2 className="section-title">{t("collectionTitle")}</h2>
           </div>
           <p className="hidden max-w-xs text-right text-sm font-light leading-7 text-on-surface-muted md:block">
             {t("collectionDesc")}
@@ -69,14 +76,18 @@ export default async function HomePage({ params }) {
         </div>
       </section>
 
-      {/* ── VALEURS ── */}
+      {/* ── POURQUOI NUKÖ ── */}
       <section className="border-y border-outline bg-surface-muted">
         <div className="page-shell page-section grid gap-20 lg:grid-cols-2 lg:items-start">
           <div className="space-y-8">
             <p className="eyebrow">{t("valuesEyebrow")}</p>
-            <h2 className="section-title">{t("valuesTitle").split("\n").map((line, i) => (<span key={i}>{i > 0 && <br />}{line}</span>))}</h2>
+            <h2 className="section-title">
+              {t("valuesTitle").split("\n").map((line, i) => (
+                <span key={i}>{i > 0 && <br />}{line}</span>
+              ))}
+            </h2>
             <p className="section-copy">{t("valuesDesc")}</p>
-            <blockquote className="border-l-2 border-secondary pl-6 font-headline text-2xl font-light italic tracking-[-0.02em] text-on-surface-muted">
+            <blockquote className="border-l-2 border-primary pl-6 text-xl font-light italic leading-8 text-on-surface-muted">
               {t("valuesQuote")}
             </blockquote>
           </div>
@@ -84,12 +95,16 @@ export default async function HomePage({ params }) {
         </div>
       </section>
 
-      {/* ── FUMISTERIE TEASER ── */}
+      {/* ── FUMISTERIE ── */}
       <section className="page-shell page-section">
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div className="space-y-3">
             <p className="eyebrow">{t("fumiEyebrow")}</p>
-            <h2 className="section-title">{t("fumiTitle").split("\n").map((line, i) => (<span key={i}>{i > 0 && <br />}{line}</span>))}</h2>
+            <h2 className="section-title">
+              {t("fumiTitle").split("\n").map((line, i) => (
+                <span key={i}>{i > 0 && <br />}{line}</span>
+              ))}
+            </h2>
             <p className="section-copy max-w-lg">{t("fumiDesc")}</p>
           </div>
           <Link className="button-secondary shrink-0" href="/fumisterie">{t("fumiCta")}</Link>
@@ -102,33 +117,35 @@ export default async function HomePage({ params }) {
         ]} />
       </section>
 
-      {/* ── LOGIQUE PRECOMMANDE ── */}
-      <section className="border-y border-outline bg-[#1d1c18] text-white">
+      {/* ── POURQUOI PRÉCOMMANDER ── */}
+      <section className="bg-black text-white">
         <div className="page-shell page-section grid gap-12 lg:grid-cols-2 lg:items-center">
           <div className="space-y-6">
-            <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-[#dcbf96]">{t("preorderWhyEyebrow")}</p>
-            <h2 className="font-headline text-4xl font-bold uppercase tracking-[-0.06em] md:text-6xl">
-              {t("preorderWhyTitle").split("\n").map((line, i) => (<span key={i}>{i > 0 && <br />}{line}</span>))}
+            <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-white/40">{t("preorderWhyEyebrow")}</p>
+            <h2 className="section-title text-white">
+              {t("preorderWhyTitle").split("\n").map((line, i) => (
+                <span key={i}>{i > 0 && <br />}{line}</span>
+              ))}
             </h2>
-            <p className="max-w-lg text-base leading-8 text-white/70">{t("preorderWhyDesc1")}</p>
-            <p className="text-base leading-8 text-white/70">{t("preorderWhyDesc2")}</p>
+            <p className="max-w-lg text-base leading-8 text-white/60">{t("preorderWhyDesc1")}</p>
+            <p className="text-base leading-8 text-white/60">{t("preorderWhyDesc2")}</p>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-3">
             {[
               { num: "01", title: t("step1Title"), desc: t("step1Desc") },
               { num: "02", title: t("step2Title"), desc: t("step2Desc") },
-              { num: "03", title: t("step3Title"), desc: t("step3Desc") }
+              { num: "03", title: t("step3Title"), desc: t("step3Desc") },
             ].map((step) => (
-              <div key={step.num} className="flex gap-5 border border-white/15 bg-white/5 p-6">
-                <span className="font-headline text-3xl font-bold tracking-[-0.05em] text-[#dcbf96] opacity-60">{step.num}</span>
+              <div key={step.num} className="flex gap-6 border border-white/10 p-6">
+                <span className="font-headline text-3xl font-black text-white/20">{step.num}</span>
                 <div>
-                  <h3 className="font-headline text-xl font-bold tracking-[-0.04em]">{step.title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-white/60">{step.desc}</p>
+                  <h3 className="font-headline text-xl font-black uppercase tracking-[-0.02em] text-white">{step.title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-white/50">{step.desc}</p>
                 </div>
               </div>
             ))}
             <Link
-              className="mt-4 inline-flex items-center gap-3 bg-white px-6 py-4 text-[11px] font-bold uppercase tracking-[0.2em] text-[#141410] transition hover:bg-[#dcbf96]"
+              className="mt-4 inline-flex border border-white px-7 py-4 text-[11px] font-bold uppercase tracking-[0.2em] text-white transition hover:bg-white hover:text-black"
               href="/precommande"
             >
               {t("preorderCta")}
@@ -137,22 +154,15 @@ export default async function HomePage({ params }) {
         </div>
       </section>
 
-      {/* ── PREORDER STRIP ── */}
-      <section className="border-b border-outline bg-[#1d1c18] py-10 text-white">
+      {/* ── JAUGE ── */}
+      <section className="border-b border-outline py-10">
         <div className="page-shell">
           <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
             <div className="flex-1">
-              <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-[#dcbf96]">
-                {t("stripEyebrow")}
-              </p>
-              <p className="mt-1 text-sm leading-6 text-white/70">{t("stripText")}</p>
+              <p className="eyebrow mb-1">{t("stripEyebrow")}</p>
+              <p className="text-sm leading-6 text-on-surface-muted">{t("stripText")}</p>
             </div>
-            <Link
-              className="shrink-0 border border-[#dcbf96] px-6 py-4 text-[11px] font-bold uppercase tracking-[0.2em] text-[#dcbf96] transition hover:bg-[#dcbf96] hover:text-[#141410]"
-              href="/precommande"
-            >
-              {t("stripCta")}
-            </Link>
+            <Link className="button-primary shrink-0" href="/precommande">{t("stripCta")}</Link>
           </div>
           <div className="mt-8 max-w-lg">
             <PreorderGauge compact reserved={reserved} total={100} />
@@ -164,12 +174,14 @@ export default async function HomePage({ params }) {
       <section className="page-shell page-section text-center">
         <p className="eyebrow mb-4">{t("ctaEyebrow")}</p>
         <h2 className="section-title mx-auto max-w-2xl">
-          {t("ctaTitle").split("\n").map((line, i) => (<span key={i}>{i > 0 && <br />}{line}</span>))}
+          {t("ctaTitle").split("\n").map((line, i) => (
+            <span key={i}>{i > 0 && <br />}{line}</span>
+          ))}
         </h2>
-        <p className="section-copy mx-auto mt-4 max-w-lg text-center">{t("ctaDesc")}</p>
+        <p className="section-copy mx-auto mt-6 text-center">{t("ctaDesc")}</p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-          <Link className="button-primary" href="/contact">{t("ctaContactBtn") ?? tc("contactWorkshop")}</Link>
-          <Link className="button-secondary" href="/professionnel">{t("ctaProBtn") ?? tc("proSpace")}</Link>
+          <Link className="button-primary" href="/contact">{t("ctaContactBtn")}</Link>
+          <Link className="button-secondary" href="/professionnel">{t("ctaProBtn")}</Link>
         </div>
       </section>
     </>

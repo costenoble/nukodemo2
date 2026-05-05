@@ -10,7 +10,7 @@ export function AppShell({ children }) {
       <div className="min-h-screen bg-background">
         <SiteHeader />
         <MotionProvider>
-          <div className="pt-24">{children}</div>
+          <div>{children}</div>
         </MotionProvider>
       </div>
     </CartProvider>

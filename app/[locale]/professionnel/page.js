@@ -16,7 +16,7 @@ export default async function ProfessionnelPage({ params }) {
   return (
     <>
       <section className="border-b border-outline bg-[#1d1c18] text-white">
-        <div className="page-shell py-20 md:py-28">
+        <div className="page-shell pt-36 pb-20 md:pt-44 md:pb-28">
           <p className="eyebrow mb-4 text-[#dcbf96]">{t("eyebrow")}</p>
           <h1 className="page-title max-w-3xl text-white">{t("heroTitle")}</h1>
           <p className="section-copy mt-6 max-w-xl text-white/70">{t("heroDesc")}</p>

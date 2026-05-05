@@ -20,12 +20,12 @@ module.exports = {
         outline: "var(--outline)"
       },
       fontFamily: {
-        headline: ["Space Grotesk", "Avenir Next", "sans-serif"],
-        body: ["Manrope", "Avenir Next", "sans-serif"],
-        label: ["Space Grotesk", "Avenir Next", "sans-serif"]
+        headline: ["Barlow", "Barlow Condensed", "Helvetica Neue", "sans-serif"],
+        body: ["Manrope", "Helvetica Neue", "sans-serif"],
+        label: ["Barlow", "Helvetica Neue", "sans-serif"]
       },
       boxShadow: {
-        atmospheric: "0 20px 70px rgba(18, 18, 16, 0.12)"
+        atmospheric: "0 8px 40px rgba(0, 0, 0, 0.08)"
       }
     }
   },
