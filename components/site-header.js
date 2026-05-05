@@ -47,22 +47,24 @@ export function SiteHeader() {
     <header className="fixed inset-x-0 top-0 z-50 bg-black">
 
       {/* ── Barre principale ── */}
-      <div className="flex h-14 items-center justify-between px-5 md:px-10">
+      <div className="flex h-14 items-center px-5 md:px-10">
 
-        {/* Mobile : hamburger */}
-        <button
-          className="flex h-8 w-8 flex-col items-center justify-center gap-1.5 md:hidden"
-          onClick={() => setIsMenuOpen((c) => !c)}
-          aria-label="Menu"
-          type="button"
-        >
-          <span className={`block h-px w-5 bg-white transition-all duration-300 ${isMenuOpen ? "translate-y-2 rotate-45" : ""}`} />
-          <span className={`block h-px w-5 bg-white transition-opacity duration-300 ${isMenuOpen ? "opacity-0" : ""}`} />
-          <span className={`block h-px w-5 bg-white transition-all duration-300 ${isMenuOpen ? "-translate-y-2 -rotate-45" : ""}`} />
-        </button>
+        {/* Mobile : hamburger (1/3 gauche) */}
+        <div className="flex w-1/3 md:hidden">
+          <button
+            className="flex h-8 w-8 flex-col items-center justify-center gap-1.5"
+            onClick={() => setIsMenuOpen((c) => !c)}
+            aria-label="Menu"
+            type="button"
+          >
+            <span className={`block h-px w-5 bg-white transition-all duration-300 ${isMenuOpen ? "translate-y-2 rotate-45" : ""}`} />
+            <span className={`block h-px w-5 bg-white transition-opacity duration-300 ${isMenuOpen ? "opacity-0" : ""}`} />
+            <span className={`block h-px w-5 bg-white transition-all duration-300 ${isMenuOpen ? "-translate-y-2 -rotate-45" : ""}`} />
+          </button>
+        </div>
 
         {/* Desktop : nav gauche */}
-        <nav className="hidden items-center gap-7 md:flex">
+        <nav className="hidden flex-1 items-center gap-7 md:flex">
           {navItems.map((item) => (
             <Link
               key={item.href}
@@ -76,16 +78,18 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        {/* Centre : logo */}
-        <Link
-          className="absolute left-1/2 -translate-x-1/2 font-headline text-xl font-black uppercase tracking-[-0.04em] text-white md:text-2xl"
-          href="/"
-        >
-          NUKÖ
-        </Link>
+        {/* Centre : logo (1/3 centré mobile, auto desktop) */}
+        <div className="flex w-1/3 justify-center md:w-auto md:flex-1 md:justify-center">
+          <Link
+            className="font-headline text-xl font-black uppercase tracking-[-0.04em] text-white md:text-2xl"
+            href="/"
+          >
+            NUKÖ
+          </Link>
+        </div>
 
-        {/* Droite : utilitaires */}
-        <div className="flex items-center gap-4 md:gap-5">
+        {/* Droite : utilitaires (1/3 droite mobile) */}
+        <div className="flex w-1/3 items-center justify-end gap-3 md:w-auto md:gap-5">
 
           {/* FR / EN — desktop */}
           <div className="hidden items-center gap-1.5 md:flex">

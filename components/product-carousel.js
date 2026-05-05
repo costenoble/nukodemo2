@@ -39,23 +39,25 @@ export function ProductCarousel({ products }) {
                 src={product.heroImage}
               />
             </div>
-            <div className="flex items-end justify-between gap-6 p-8 md:p-10">
+            <div className="flex flex-col gap-5 p-6 md:flex-row md:items-end md:justify-between md:gap-6 md:p-10">
               <div>
-                <h3 className="font-headline text-5xl font-bold uppercase tracking-[-0.06em] md:text-6xl">
+                <h3 className="font-headline text-4xl font-bold uppercase tracking-[-0.06em] md:text-6xl">
                   {product.name}
                 </h3>
-                <p className="mt-3 max-w-xs text-sm font-light leading-7 text-on-surface-muted">
+                <p className="mt-2 max-w-xs text-sm font-light leading-7 text-on-surface-muted">
                   {product.subtitle}
                 </p>
               </div>
-              <div className="shrink-0 text-right">
-                <p className="font-headline text-3xl font-bold tracking-[-0.05em]">
-                  {formatPrice(product.preorderPrice)}
-                </p>
-                <p className="mt-1 text-xs text-on-surface-muted line-through">
-                  {formatPrice(product.price)}
-                </p>
-                <div className="mt-4 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-secondary transition-colors group-hover:text-primary">
+              <div className="flex items-center justify-between md:block md:shrink-0 md:text-right">
+                <div>
+                  <p className="font-headline text-2xl font-bold tracking-[-0.05em] md:text-3xl">
+                    {formatPrice(product.preorderPrice)}
+                  </p>
+                  <p className="mt-0.5 text-xs text-on-surface-muted line-through">
+                    {formatPrice(product.price)}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-on-surface-muted transition-colors group-hover:text-primary md:mt-4">
                   {tc("seeProduct")}
                   <svg className="h-3 w-3 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} />

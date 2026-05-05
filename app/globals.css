@@ -55,11 +55,15 @@ body {
   }
 
   .page-title {
-    @apply font-headline text-6xl font-black uppercase leading-[0.88] tracking-[-0.03em] md:text-[9rem] lg:text-[11rem];
+    @apply font-headline text-[2.8rem] font-black uppercase leading-[0.88] tracking-[-0.03em] md:text-[9rem] lg:text-[11rem];
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
 
   .section-title {
-    @apply font-headline text-5xl font-black uppercase leading-[0.9] tracking-[-0.02em] md:text-7xl lg:text-8xl;
+    @apply font-headline text-4xl font-black uppercase leading-[0.9] tracking-[-0.02em] md:text-7xl lg:text-8xl;
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
 
   .section-copy {
