@@ -69,7 +69,7 @@ export function SiteHeader() {
             <Link
               key={item.href}
               className={`text-[10px] font-bold uppercase tracking-[0.18em] transition-colors ${
-                isActive(pathname, item.href) ? "text-white" : "text-white/50 hover:text-white"
+                isActive(pathname, item.href) ? "text-[#006400]" : "text-white/50 hover:text-white"
               }`}
               href={item.href}
             >

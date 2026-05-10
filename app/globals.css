@@ -11,7 +11,7 @@
   --surface-soft: #e4e4e2;
   --surface-strong: #d0d0ce;
   --primary: #0a0a0a;
-  --secondary: #0a0a0a;
+  --secondary: #006400;
   --on-surface: #0a0a0a;
   --on-surface-muted: #6b6b6b;
   --outline: #e0e0de;
@@ -51,7 +51,7 @@ body {
   }
 
   .eyebrow {
-    @apply text-[10px] font-bold uppercase tracking-[0.28em] text-on-surface-muted;
+    @apply text-[10px] font-bold uppercase tracking-[0.28em] text-secondary;
   }
 
   .page-title {

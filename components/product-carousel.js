@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 
 import { Link } from "@/i18n/navigation";
 import { formatPrice } from "@/lib/format";
+import { ProductImage } from "@/components/product-image";
 
 export function ProductCarousel({ products }) {
   const tc = useTranslations("common");
@@ -33,9 +34,10 @@ export function ProductCarousel({ products }) {
             href={`/produit/${product.slug}`}
           >
             <div className="overflow-hidden">
-              <img
+              <ProductImage
                 alt={product.name}
-                className="h-[55vw] max-h-[500px] w-full object-cover transition-transform duration-700 group-hover:scale-103"
+                category={product.category}
+                className="h-[55vw] max-h-[500px] w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 src={product.heroImage}
               />
             </div>
