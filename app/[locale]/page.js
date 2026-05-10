@@ -162,7 +162,6 @@ export default async function HomePage({ params }) {
         <p className="section-copy mx-auto mt-6 text-center">{t("ctaDesc")}</p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
           <Link className="button-primary" href="/contact">{t("ctaContactBtn")}</Link>
-          <Link className="button-secondary" href="/contact">{t("ctaProBtn")}</Link>
         </div>
       </section>
     </>
