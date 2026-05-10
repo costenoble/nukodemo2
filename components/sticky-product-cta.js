@@ -20,7 +20,7 @@ export function StickyProductCTA({ product }) {
   }, []);
 
   function handleAdd() {
-    addItem({ productId: product.id, quantity: 1, unitPrice: product.price });
+    addItem(product.id, 1, { unitPrice: product.price });
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
   }

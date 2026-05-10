@@ -14,7 +14,7 @@ export function AddToCartForm({ product }) {
 
   function handleAdd() {
     const label = [selectedSize, selectedColor?.name].filter(Boolean).join(" — ");
-    addItem({ productId: product.id, quantity: 1, unitPrice: product.price, configLabel: label || undefined });
+    addItem(product.id, 1, { unitPrice: product.price, configLabel: label || undefined });
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
   }
