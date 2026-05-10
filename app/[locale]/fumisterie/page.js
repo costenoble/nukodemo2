@@ -34,7 +34,7 @@ export default async function CataloguePage({ params }) {
       <section className="border-b border-outline bg-surface-muted">
         <div className="page-shell pb-16 pt-36 md:pb-24 md:pt-44">
           <p className="eyebrow mb-4">{eyebrow}</p>
-          <h1 className="page-title max-w-2xl">{title}</h1>
+          <h1 className="page-title">{title}</h1>
           <p className="section-copy mt-6">{desc}</p>
         </div>
       </section>

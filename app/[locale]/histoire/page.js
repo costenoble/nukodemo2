@@ -26,7 +26,7 @@ export default async function HistoirePage({ params }) {
       <section className="relative overflow-hidden border-b border-outline bg-black text-white">
         <div className="page-shell relative pt-36 pb-20 md:pt-44 md:pb-28">
           <p className="eyebrow mb-5">{t("eyebrow")}</p>
-          <h1 className="page-title max-w-3xl text-white">
+          <h1 className="page-title text-white">
             {t("heroTitle").split("\n").map((line, i) => (<span key={i}>{i > 0 && <br />}{line}</span>))}
           </h1>
           <p className="mt-8 max-w-xl text-lg leading-8 text-white/70">{t("heroDesc")}</p>
