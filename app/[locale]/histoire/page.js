@@ -2,6 +2,7 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 
 import { SectionHeading } from "@/components/section-heading";
 import { Link } from "@/i18n/navigation";
+import { ProductImage } from "@/components/product-image";
 import { historyPillars } from "@/lib/content";
 
 export async function generateMetadata({ params }) {
@@ -22,11 +23,9 @@ export default async function HistoirePage({ params }) {
 
   return (
     <>
-      <section className="relative overflow-hidden border-b border-outline bg-[#1d1c18] text-white">
-        <img alt="Atelier NUKÖ" className="absolute inset-0 h-full w-full object-cover opacity-30" src="/images/hearth-home.jpg" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#1d1c18]/90 to-transparent" />
-        <div className="page-shell relative py-24 md:py-36">
-          <p className="eyebrow mb-5 text-[#dcbf96]">{t("eyebrow")}</p>
+      <section className="relative overflow-hidden border-b border-outline bg-black text-white">
+        <div className="page-shell relative pt-36 pb-20 md:pt-44 md:pb-28">
+          <p className="eyebrow mb-5">{t("eyebrow")}</p>
           <h1 className="page-title max-w-3xl text-white">
             {t("heroTitle").split("\n").map((line, i) => (<span key={i}>{i > 0 && <br />}{line}</span>))}
           </h1>
@@ -41,23 +40,23 @@ export default async function HistoirePage({ params }) {
           <div className="space-y-5 text-base leading-8 text-on-surface-muted">
             <p>
               {locale === "en"
-                ? "It starts with a Sprinter van, a Breton winter, and a problem with no good solution on the market. Existing stoves for mobile homes were either too heavy, too poorly documented, or impossible to integrate neatly in a constrained volume."
-                : "Au départ, il y a un van Sprinter aménagé, un hiver breton, et un problème qui n'avait pas de bonne solution sur le marché. Les poêles existants pour les habitats mobiles étaient soit trop lourds, soit trop peu documentés, soit impossibles à intégrer proprement dans un volume contraint."}
+                ? "CST started with a simple observation: quality clothing that's seriously made, without the inflated logo price, didn't exist at an accessible price point. Everything was either fast fashion or luxury — nothing in between that was genuinely built to last."
+                : "CST est parti d'un constat simple : des vêtements de qualité, fabriqués sérieusement, sans le prix gonflé du logo, ça n'existait pas à un tarif accessible. Tout était soit fast fashion, soit luxe — rien entre les deux qui soit vraiment construit pour durer."}
             </p>
             <p>
               {locale === "en"
-                ? "Rather than making do, we started designing differently. The brief was brutally simple: compact, inert, safe, and installable without a professional. Two years of prototypes, real-world testing and iterations later, the Nomad 01 was ready."
-                : "Plutôt que de faire avec, on a commencé à dessiner autrement. Le cahier des charges était brutal de simplicité : compact, inerte, sûr, et installable sans faire appel à un professionnel. Deux ans de prototypes, de tests en conditions réelles et d'itérations plus tard, le Nomad 01 était prêt."}
+                ? "We spent a year selecting workshops in Portugal, testing fabrics, adjusting cuts. The brief was brutal in its simplicity: heavyweight materials, reinforced finishes, cuts that hold their shape after thirty washes."
+                : "On a passé un an à sélectionner des ateliers au Portugal, tester des matières, ajuster les coupes. Le cahier des charges était brutal de simplicité : grammages élevés, finitions renforcées, coupes qui tiennent après trente lavages."}
             </p>
             <p>
               {locale === "en"
-                ? "The name NUKÖ comes from the Norwegian nukke — a form of soft, enveloping warmth, the kind associated with a wood fire in a space you've chosen to make livable."
-                : "Le nom NUKÖ vient du norvégien nukke — une forme de chaleur douce et enveloppante, celle qu'on associe à un feu de bois dans un espace qu'on a choisi de rendre habitable."}
+                ? "CST — Define Your Standard. The name says it all: we're not here to set a trend, but to set a standard."
+                : "CST — Define Your Standard. Le nom dit tout : on n'est pas là pour dicter une tendance, mais pour poser un standard."}
             </p>
           </div>
         </div>
         <div className="overflow-hidden border border-outline bg-surface">
-          <img alt="Premier prototype NUKÖ en atelier" className="h-[520px] w-full object-cover" src="/images/nomad-hero.jpg" />
+          <ProductImage alt="CST studio" category="T-shirt" className="h-[520px] w-full object-cover" src="" />
         </div>
       </section>
 
@@ -77,7 +76,7 @@ export default async function HistoirePage({ params }) {
 
       <section className="page-shell page-section grid gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
         <div className="overflow-hidden border border-outline bg-surface">
-          <img alt="Assemblage à l'atelier NUKÖ, Lorient" className="h-[500px] w-full object-cover" src="/images/nomad-detail.jpg" />
+          <ProductImage alt="CST fabrication" category="Pantalon" className="h-[500px] w-full object-cover" src="" />
         </div>
         <div className="space-y-6">
           <p className="eyebrow">{t("workshopEyebrow")}</p>
@@ -109,24 +108,24 @@ export default async function HistoirePage({ params }) {
             {[
               {
                 quote: locale === "en"
-                  ? "The Nomad 01 has been running in my Sprinter for two winters. Not a single bad surprise. Installation takes an afternoon if you've read the manual."
-                  : "Ça fait deux hivers que le Nomad 01 tourne dans mon Sprinter. Je n'ai pas eu une seule mauvaise surprise. L'installation prend une après-midi si on a lu la notice.",
-                author: "Thomas R.",
-                role: locale === "en" ? "Van builder, Lyon" : "Aménageur van, Lyon"
+                  ? "I've washed the Tee 001 at least thirty times. It hasn't shrunk, hasn't faded, hasn't lost its shape. That's all I ask of a basic tee."
+                  : "J'ai lavé le Tee 001 au moins trente fois. Il n'a pas rétréci, pas déteint, pas perdu sa forme. C'est tout ce que je demande à un tee de base.",
+                author: "Lucas M.",
+                role: locale === "en" ? "Paris" : "Paris"
               },
               {
                 quote: locale === "en"
-                  ? "I compared four other models. None had this level of documentation rigour. The installation guide convinced me before I even lit the stove."
-                  : "J'ai comparé avec quatre autres modèles du marché. Aucun n'avait cette rigueur de documentation. Le guide d'installation m'a convaincu avant même d'allumer le poêle.",
-                author: "Marine L.",
-                role: locale === "en" ? "Tiny house, Finistère" : "Tiny house, Finistère"
+                  ? "The Cargo 001 is the only pair of trousers I wear every day. The weight of the fabric makes the difference — you feel the quality immediately."
+                  : "Le Cargo 001 c'est le seul pantalon que je porte tous les jours. Le grammage du tissu fait la différence — on sent la qualité immédiatement.",
+                author: "Sarah K.",
+                role: locale === "en" ? "Bordeaux" : "Bordeaux"
               },
               {
                 quote: locale === "en"
-                  ? "For clients who want a real fire — not a radiator — it's the only option I recommend. The size / power / safety ratio is unbeatable in this segment."
-                  : "Pour mes clients qui veulent un vrai feu — pas un radiateur — c'est la seule option que je propose. Le rapport taille / puissance / sécurité est imbattable sur ce segment.",
-                author: "Alexandre D.",
-                role: locale === "en" ? "Professional van builder, Paris" : "Aménageur professionnel, Paris"
+                  ? "Finally a brand that doesn't need a huge logo to justify the price. The pieces speak for themselves."
+                  : "Enfin une marque qui n'a pas besoin d'un gros logo pour justifier le prix. Les pièces parlent d'elles-mêmes.",
+                author: "Antoine D.",
+                role: locale === "en" ? "Lyon" : "Lyon"
               }
             ].map(({ quote, author, role }) => (
               <figure key={author} className="flex flex-col justify-between border border-white/15 bg-white/5 p-8">

@@ -11,7 +11,6 @@ const navItems = [
   { href: "/particulier", key: "stoves" },
   { href: "/fumisterie", key: "fumisterie" },
   { href: "/histoire", key: "story" },
-  { href: "/journal", key: "journal" },
   { href: "/contact", key: "contact" },
 ];
 

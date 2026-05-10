@@ -7,8 +7,7 @@ const navItems = [
   { href: "/particulier", key: "stoves" },
   { href: "/fumisterie", key: "fumisterie" },
   { href: "/histoire", key: "story" },
-  { href: "/journal", key: "journal" },
-  { href: "/contact", key: "contact" }
+  { href: "/contact", key: "contact" },
 ];
 
 export function SiteFooter() {
@@ -19,7 +18,7 @@ export function SiteFooter() {
     <footer className="border-t border-outline bg-surface-muted">
       <div className="page-shell grid gap-12 py-16 md:grid-cols-[1.3fr_1fr_1fr]">
         <div className="space-y-5">
-          <div className="font-headline text-3xl font-bold tracking-[-0.08em]">NUKÖ</div>
+          <div className="font-headline text-3xl font-black uppercase tracking-[0.04em]">CST</div>
           <p className="max-w-md text-sm leading-7 text-on-surface-muted">{tf("tagline")}</p>
         </div>
 
@@ -39,8 +38,13 @@ export function SiteFooter() {
           <div className="space-y-2 text-sm leading-7 text-on-surface-muted">
             {atelierDetails.address.map((line) => (<p key={line}>{line}</p>))}
             <p><a className="hover:text-on-surface" href={`mailto:${atelierDetails.email}`}>{atelierDetails.email}</a></p>
-            <p>{atelierDetails.phone}</p>
           </div>
+        </div>
+      </div>
+      <div className="border-t border-outline">
+        <div className="page-shell flex items-center justify-between py-4 text-[10px] text-on-surface-muted">
+          <span>© {new Date().getFullYear()} CST. Tous droits réservés.</span>
+          <Link className="hover:text-on-surface" href="/contact">Contact</Link>
         </div>
       </div>
     </footer>

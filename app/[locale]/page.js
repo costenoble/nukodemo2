@@ -5,17 +5,13 @@ import { Link } from "@/i18n/navigation";
 import { AudienceAccordion } from "@/components/audience-accordion";
 import { FumiList } from "@/components/fumi-list";
 import { HomeSplit } from "@/components/home-split";
-import { PreorderGauge } from "@/components/preorder-gauge";
 import { ProductCarousel } from "@/components/product-carousel";
 import { allProducts } from "@/lib/products";
-import { getPreorderCount } from "@/lib/preorder-count";
 
 export default async function HomePage({ params }) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("home");
-  const reserved = getPreorderCount();
-
   return (
     <>
       {/* ── HERO ── */}
@@ -154,21 +150,6 @@ export default async function HomePage({ params }) {
         </div>
       </section>
 
-      {/* ── JAUGE ── */}
-      <section className="border-b border-outline py-10">
-        <div className="page-shell">
-          <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-            <div className="flex-1">
-              <p className="eyebrow mb-1">{t("stripEyebrow")}</p>
-              <p className="text-sm leading-6 text-on-surface-muted">{t("stripText")}</p>
-            </div>
-            <Link className="button-primary shrink-0" href="/precommande">{t("stripCta")}</Link>
-          </div>
-          <div className="mt-8 max-w-lg">
-            <PreorderGauge compact reserved={reserved} total={100} />
-          </div>
-        </div>
-      </section>
 
       {/* ── CTA FINAL ── */}
       <section className="page-shell page-section text-center">
