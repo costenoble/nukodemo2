@@ -29,11 +29,13 @@ export function ProductImage({ src, alt, category = "", className = "" }) {
   }
 
   return (
-    <img
-      alt={alt}
-      className={className}
-      src={src}
-      onError={() => setFailed(true)}
-    />
+    <div className={`bg-[#f0f0ee] ${className}`}>
+      <img
+        alt={alt}
+        className="h-full w-full object-contain p-6"
+        src={src}
+        onError={() => setFailed(true)}
+      />
+    </div>
   );
 }
