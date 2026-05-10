@@ -8,21 +8,21 @@ import { routing } from "@/i18n/routing";
 
 export const metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
-  title: "NUKÖ | Poêles à bois compacts",
-  description: "Poêles à bois compacts pour vans, tiny houses et refuges. Première série limitée — précommande ouverte, livraison juillet 2026.",
+  title: "CST | Define Your Standard",
+  description: "Vêtements premium en édition limitée. Fabriqués au Portugal, pensés pour durer. Drop 01 disponible maintenant.",
   openGraph: {
-    title: "NUKÖ — Poêles à bois compacts",
-    description: "Première série limitée de 100 appareils. Conçus pour les vans, tiny houses et refuges. Précommande ouverte.",
-    url: "https://nuko.fr",
-    siteName: "NUKÖ",
-    images: [{ url: "/images/hearth-home.jpg", width: 1200, height: 630, alt: "NUKÖ — Poêle à bois compact" }],
+    title: "CST — Define Your Standard",
+    description: "Drop 01 disponible. Quatre pièces premium en édition limitée. Fabriqués au Portugal.",
+    url: "https://cst-brand.fr",
+    siteName: "CST",
+    images: [{ url: "/images/hearth-home.jpg", width: 1200, height: 630, alt: "CST — Define Your Standard" }],
     locale: "fr_FR",
     type: "website"
   },
   twitter: {
     card: "summary_large_image",
-    title: "NUKÖ — Poêles à bois compacts",
-    description: "Première série limitée. Vans, tiny houses, refuges.",
+    title: "CST — Define Your Standard",
+    description: "Drop 01 disponible. Vêtements premium édition limitée.",
     images: ["/images/hearth-home.jpg"]
   }
 };

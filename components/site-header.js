@@ -81,10 +81,10 @@ export function SiteHeader() {
         {/* Centre : logo (1/3 centré mobile, auto desktop) */}
         <div className="flex w-1/3 justify-center md:w-auto md:flex-1 md:justify-center">
           <Link
-            className="font-headline text-xl font-black uppercase tracking-[-0.04em] text-white md:text-2xl"
+            className="font-headline text-lg font-black uppercase tracking-[0.06em] text-white md:text-xl"
             href="/"
           >
-            NUKÖ
+            CST
           </Link>
         </div>
 
