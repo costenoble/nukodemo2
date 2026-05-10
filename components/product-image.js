@@ -29,10 +29,10 @@ export function ProductImage({ src, alt, category = "", className = "" }) {
   }
 
   return (
-    <div className={`bg-[#f0f0ee] ${className}`}>
+    <div className={`overflow-hidden ${className}`}>
       <img
         alt={alt}
-        className="h-full w-full object-contain p-6"
+        className="h-full w-full object-cover"
         src={src}
         onError={() => setFailed(true)}
       />
