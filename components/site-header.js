@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { useCart } from "@/components/cart-provider";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
@@ -38,153 +38,89 @@ export function SiteHeader() {
   const t = useTranslations("nav");
   const currentLocale = pathname.startsWith("/en") ? "en" : "fr";
 
+  // Lock scroll when menu is open
+  useEffect(() => {
+    document.body.style.overflow = isMenuOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [isMenuOpen]);
+
   function switchLocale(locale) {
     router.replace(pathname, { locale });
   }
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 bg-black">
+    <>
+      <header className="fixed inset-x-0 top-0 z-50 bg-black">
+        {/* ── Barre principale ── */}
+        <div className="flex h-14 items-center px-5 md:px-10">
 
-      {/* ── Barre principale ── */}
-      <div className="flex h-14 items-center px-5 md:px-10">
-
-        {/* Mobile : hamburger (1/3 gauche) */}
-        <div className="flex w-1/3 md:hidden">
-          <button
-            className="flex h-8 w-8 flex-col items-center justify-center gap-1.5"
-            onClick={() => setIsMenuOpen((c) => !c)}
-            aria-label="Menu"
-            type="button"
-          >
-            <span className={`block h-px w-5 bg-white transition-all duration-300 ${isMenuOpen ? "translate-y-2 rotate-45" : ""}`} />
-            <span className={`block h-px w-5 bg-white transition-opacity duration-300 ${isMenuOpen ? "opacity-0" : ""}`} />
-            <span className={`block h-px w-5 bg-white transition-all duration-300 ${isMenuOpen ? "-translate-y-2 -rotate-45" : ""}`} />
-          </button>
-        </div>
-
-        {/* Desktop : nav gauche */}
-        <nav className="hidden flex-1 items-center gap-7 md:flex">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              className={`text-[10px] font-bold uppercase tracking-[0.18em] transition-colors ${
-                isActive(pathname, item.href) ? "text-[#006400]" : "text-white/50 hover:text-white"
-              }`}
-              href={item.href}
+          {/* Hamburger (visible everywhere now) */}
+          <div className="flex w-1/3 md:w-auto md:mr-8">
+            <button
+              className="relative flex h-8 w-8 flex-col items-center justify-center gap-1.5"
+              onClick={() => setIsMenuOpen((c) => !c)}
+              aria-label="Menu"
+              type="button"
             >
-              {t(item.key)}
-            </Link>
-          ))}
-        </nav>
-
-        {/* Centre : logo (1/3 centré mobile, auto desktop) */}
-        <div className="flex w-1/3 justify-center md:w-auto md:flex-1 md:justify-center">
-          <Link
-            className="font-headline text-lg font-black uppercase tracking-[0.06em] text-white md:text-xl"
-            href="/"
-          >
-            CST
-          </Link>
-        </div>
-
-        {/* Droite : utilitaires (1/3 droite mobile) */}
-        <div className="flex w-1/3 items-center justify-end gap-3 md:w-auto md:gap-5">
-
-          {/* FR / EN — desktop */}
-          <div className="hidden items-center gap-1.5 md:flex">
-            {routing.locales.map((locale, i) => (
-              <span key={locale} className="flex items-center gap-1.5">
-                {i > 0 && <span className="text-white/20 text-xs">|</span>}
-                <button
-                  className={`text-[10px] font-bold uppercase tracking-[0.14em] transition-colors ${
-                    currentLocale === locale ? "text-white" : "text-white/40 hover:text-white/70"
-                  }`}
-                  onClick={() => switchLocale(locale)}
-                  type="button"
-                >
-                  {locale.toUpperCase()}
-                </button>
-              </span>
-            ))}
+              <span className={`block h-px w-5 bg-white transition-all duration-300 ${isMenuOpen ? "translate-y-2 rotate-45" : ""}`} />
+              <span className={`block h-px w-5 bg-white transition-opacity duration-300 ${isMenuOpen ? "opacity-0" : ""}`} />
+              <span className={`block h-px w-5 bg-white transition-all duration-300 ${isMenuOpen ? "-translate-y-2 -rotate-45" : ""}`} />
+            </button>
           </div>
 
-          {/* Espace pro — desktop */}
-          <Link
-            className="hidden text-[10px] font-bold uppercase tracking-[0.18em] text-white/40 transition-colors hover:text-white md:inline"
-            href="/professionnel"
-          >
-            {t("pro")}
-          </Link>
-
-          {/* Panier */}
-          <Link className="relative text-white transition-opacity hover:opacity-60" href="/panier" aria-label={t("cart")}>
-            <CartIcon />
-            {hasHydrated && count > 0 && (
-              <span className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-white text-[9px] font-bold leading-none text-black">
-                {count}
-              </span>
-            )}
-          </Link>
-
-          {/* Précommander — desktop */}
-          <Link
-            className="hidden border border-white/60 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.18em] text-white transition hover:border-white hover:bg-white hover:text-black md:inline-flex"
-            href="/precommande"
-          >
-            {t("preorder")}
-          </Link>
-
-          {/* Précommander — mobile (petit) */}
-          <Link
-            className="border border-white/50 px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.14em] text-white md:hidden"
-            href="/precommande"
-          >
-            {t("preorder")}
-          </Link>
-        </div>
-      </div>
-
-      {/* ── Menu mobile ── */}
-      <div className={`overflow-hidden bg-black transition-all duration-300 md:hidden ${isMenuOpen ? "max-h-screen border-t border-white/10" : "max-h-0"}`}>
-        <div className="flex flex-col px-5 pb-6 pt-2">
-          {navItems.map((item) => (
+          {/* Logo — centré */}
+          <div className="flex w-1/3 justify-center md:flex-1 md:justify-center">
             <Link
-              key={item.href}
-              className={`border-b border-white/10 py-4 text-[11px] font-bold uppercase tracking-[0.18em] transition-colors ${
-                isActive(pathname, item.href) ? "text-white" : "text-white/60 hover:text-white"
-              }`}
-              href={item.href}
+              className="font-headline text-lg font-black uppercase tracking-[0.06em] text-white md:text-xl"
+              href="/"
               onClick={() => setIsMenuOpen(false)}
             >
-              {t(item.key)}
+              CST
             </Link>
-          ))}
-          <Link
-            className="border-b border-white/10 py-4 text-[11px] font-bold uppercase tracking-[0.18em] text-white/40"
-            href="/professionnel"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            {t("pro")}
-          </Link>
+          </div>
 
-          {/* FR/EN + précommande */}
-          <div className="mt-5 flex items-center justify-between">
-            <div className="flex gap-4">
-              {routing.locales.map((locale) => (
-                <button
-                  key={locale}
-                  className={`text-[10px] font-bold uppercase tracking-[0.14em] ${
-                    currentLocale === locale ? "text-white" : "text-white/40"
-                  }`}
-                  onClick={() => { switchLocale(locale); setIsMenuOpen(false); }}
-                  type="button"
-                >
-                  {locale.toUpperCase()}
-                </button>
+          {/* Droite */}
+          <div className="flex w-1/3 items-center justify-end gap-3 md:w-auto md:gap-5">
+
+            {/* FR / EN */}
+            <div className="hidden items-center gap-1.5 md:flex">
+              {routing.locales.map((locale, i) => (
+                <span key={locale} className="flex items-center gap-1.5">
+                  {i > 0 && <span className="text-white/20 text-xs">|</span>}
+                  <button
+                    className={`text-[10px] font-bold uppercase tracking-[0.14em] transition-colors ${
+                      currentLocale === locale ? "text-white" : "text-white/40 hover:text-white/70"
+                    }`}
+                    onClick={() => switchLocale(locale)}
+                    type="button"
+                  >
+                    {locale.toUpperCase()}
+                  </button>
+                </span>
               ))}
             </div>
+
+            {/* Panier */}
+            <Link className="relative text-white transition-opacity hover:opacity-60" href="/panier" aria-label={t("cart")}>
+              <CartIcon />
+              {hasHydrated && count > 0 && (
+                <span className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-white text-[9px] font-bold leading-none text-black">
+                  {count}
+                </span>
+              )}
+            </Link>
+
+            {/* Précommander — desktop */}
             <Link
-              className="border border-white px-5 py-2.5 text-[10px] font-bold uppercase tracking-[0.18em] text-white"
+              className="hidden border border-white/60 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.18em] text-white transition hover:border-white hover:bg-white hover:text-black md:inline-flex"
+              href="/precommande"
+            >
+              {t("preorder")}
+            </Link>
+
+            {/* Précommander — mobile */}
+            <Link
+              className="border border-white/50 px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.14em] text-white md:hidden"
               href="/precommande"
               onClick={() => setIsMenuOpen(false)}
             >
@@ -192,7 +128,66 @@ export function SiteHeader() {
             </Link>
           </div>
         </div>
+      </header>
+
+      {/* ── Menu overlay plein écran ── */}
+      <div
+        className={`fixed inset-0 z-40 flex flex-col bg-black transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] ${
+          isMenuOpen ? "translate-y-0" : "translate-y-full"
+        }`}
+        aria-hidden={!isMenuOpen}
+      >
+        {/* Contenu centré verticalement */}
+        <div className="flex flex-1 flex-col items-start justify-center px-8 md:px-16">
+          <nav className="w-full space-y-1">
+            {[...navItems, { href: "/professionnel", key: "pro" }].map((item, i) => (
+              <div
+                key={item.href}
+                className="overflow-hidden"
+                style={{
+                  transitionDelay: isMenuOpen ? `${80 + i * 60}ms` : "0ms",
+                }}
+              >
+                <Link
+                  href={item.href}
+                  onClick={() => setIsMenuOpen(false)}
+                  className={`block py-3 font-headline text-5xl font-black uppercase tracking-[-0.03em] transition-all duration-500 md:text-7xl ${
+                    isMenuOpen ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
+                  } ${isActive(pathname, item.href) ? "text-[#006400]" : "text-white hover:text-white/60"}`}
+                  style={{
+                    transitionDelay: isMenuOpen ? `${80 + i * 60}ms` : "0ms",
+                  }}
+                >
+                  {t(item.key)}
+                </Link>
+              </div>
+            ))}
+          </nav>
+
+          {/* Bas : locale + infos */}
+          <div
+            className={`mt-12 flex items-center gap-6 transition-all duration-500 ${isMenuOpen ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"}`}
+            style={{ transitionDelay: isMenuOpen ? "400ms" : "0ms" }}
+          >
+            {routing.locales.map((locale, i) => (
+              <span key={locale} className="flex items-center gap-6">
+                {i > 0 && <span className="text-white/20">|</span>}
+                <button
+                  className={`text-[11px] font-bold uppercase tracking-[0.2em] transition-colors ${
+                    currentLocale === locale ? "text-white" : "text-white/30 hover:text-white/60"
+                  }`}
+                  onClick={() => { switchLocale(locale); setIsMenuOpen(false); }}
+                  type="button"
+                >
+                  {locale.toUpperCase()}
+                </button>
+              </span>
+            ))}
+            <span className="text-white/20">—</span>
+            <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/30">CST Studio</span>
+          </div>
+        </div>
       </div>
-    </header>
+    </>
   );
 }

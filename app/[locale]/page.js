@@ -19,7 +19,7 @@ export default async function HomePage({ params }) {
         <img
           alt="Poele NUKO en situation"
           className="absolute inset-0 h-full w-full object-cover opacity-40"
-          src="/images/hearth-home.jpg"
+          src="/images/hero-fashion.jpg"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" />
 

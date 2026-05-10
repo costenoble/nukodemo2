@@ -8,12 +8,12 @@ const DATA = {
     {
       id: "particulier",
       label: "Particulier",
-      headline: "Pour votre van, tiny house ou refuge",
+      headline: "Construits pour durer, pensés pour vous",
       items: [
-        { stat: "100 %", label: "Assemblage manuel", desc: "Chaque appareil est assemblé à la main dans notre atelier de Lorient. Aucune sous-traitance, aucun stock dormant." },
-        { stat: "82–84 %", label: "Rendement thermique", desc: "Très au-dessus de la moyenne des poêles de cette taille. Moins de bois, plus de chaleur, moins d'émissions." },
-        { stat: "Ø 150", label: "Conduit universel", desc: "Compatible avec tous les kits de traversée standard. Installation simplifiée dans un van ou une tiny house." },
-        { stat: "EN 13240", label: "Norme européenne", desc: "Certifié conforme à la norme européenne de sécurité pour les poêles à bois. Assurance et installation facilitées." }
+        { stat: "320 g/m²", label: "Coton heavyweight", desc: "Un grammage supérieur à la moyenne du marché. Plus dense, plus opaque, plus durable — on le sent au premier toucher." },
+        { stat: "Portugal", label: "Fabrication certifiée", desc: "Tous nos ateliers sont au Portugal. Traçabilité totale, conditions de travail vérifiées, zéro sous-traitance opaque." },
+        { stat: "OEKO-TEX", label: "Standard 100", desc: "Chaque matière utilisée est certifiée OEKO-TEX Standard 100. Aucun produit chimique nocif, testé et approuvé." },
+        { stat: "30+", label: "Lavages sans déformation", desc: "Les coutures double aiguille et les matières sélectionnées garantissent une tenue parfaite après des dizaines de lavages." }
       ]
     },
     {
@@ -21,21 +21,21 @@ const DATA = {
       label: "Revendeur",
       headline: "Une gamme courte, une forte identité",
       items: [
-        { stat: "2", label: "Modèles seulement", desc: "Nomad 01 et Cabin 03. Une gamme claire et assumée, facile à présenter et à vendre." },
-        { stat: "–15 à –30 %", label: "Tarifs dégressifs", desc: "Grille Silver / Gold / Platinum selon les volumes. Marges confortables dès 5 unités." },
-        { stat: "100 %", label: "Made in Lorient", desc: "Un argument vendeur fort : fabrication française, artisanale, documentée. Rare sur ce segment." },
-        { stat: "Série", label: "Production limitée", desc: "Le modèle série limitée crée de la rareté et de l'urgence. Plus facile à vendre qu'un produit disponible en permanence." }
+        { stat: "4", label: "Pièces fondamentales", desc: "Tee 001, Tee 002, Cargo 001, Track 001. Une gamme assumée, facile à présenter — chaque pièce justifie son prix." },
+        { stat: "–20 %", label: "Tarif revendeur", desc: "Marges confortables dès 10 unités. Grille progressive selon les volumes, sans engagement de durée." },
+        { stat: "100 %", label: "Made in Portugal", desc: "Un argument vendeur fort : fabrication européenne, certifiée, documentée. Rare à ce niveau de prix." },
+        { stat: "Série", label: "Production limitée", desc: "Le modèle drops crée de la rareté et de l'urgence. Plus facile à vendre qu'un produit disponible en permanence." }
       ]
     },
     {
       id: "pro",
-      label: "Professionnel / Distributeur",
+      label: "Professionnel",
       headline: "Distribution structurée, exclusivités possibles",
       items: [
-        { stat: "–30 %", label: "Tarif Platinum", desc: "Réservé aux engagements de 15 unités et plus. Négociation possible pour des volumes très importants." },
-        { stat: "Zone", label: "Exclusivité géographique", desc: "Possibilité d'exclusivité sur un pays ou une région hors France pour les distributeurs engagés sur volume." },
-        { stat: "STEP", label: "Supports techniques", desc: "Fichiers 3D, fiches techniques, documentation installation disponibles pour vos équipes et vos clients." },
-        { stat: "OEM", label: "Co-branding possible", desc: "Discussions ouvertes pour des partenariats structurels à fort volume. Contactez l'atelier directement." }
+        { stat: "–30 %", label: "Tarif Platinum", desc: "Réservé aux engagements de 30 pièces et plus. Négociation possible pour des volumes très importants." },
+        { stat: "Zone", label: "Exclusivité géographique", desc: "Exclusivité possible sur une région ou un pays pour les distributeurs engagés sur volume." },
+        { stat: "Visuels", label: "Supports fournis", desc: "Photos produits HD, fiches techniques, look book disponibles pour vos équipes et votre site." },
+        { stat: "CST+", label: "Co-branding possible", desc: "Discussions ouvertes pour des partenariats à fort volume ou des éditions exclusives. Contactez le studio." }
       ]
     }
   ],
@@ -43,12 +43,12 @@ const DATA = {
     {
       id: "particulier",
       label: "Individual",
-      headline: "For your van, tiny house or refuge",
+      headline: "Built to last, designed for you",
       items: [
-        { stat: "100 %", label: "Hand assembled", desc: "Every unit is assembled by hand in our Lorient workshop. No subcontracting, no dormant stock." },
-        { stat: "82–84 %", label: "Thermal efficiency", desc: "Well above average for stoves of this size. Less wood, more heat, fewer emissions." },
-        { stat: "Ø 150", label: "Universal flue", desc: "Compatible with all standard roof penetration kits. Simplified installation in a van or tiny house." },
-        { stat: "EN 13240", label: "European standard", desc: "Certified compliant with the European safety standard for wood-burning stoves." }
+        { stat: "320 g/m²", label: "Heavyweight cotton", desc: "Above-average fabric weight. Denser, more opaque, more durable — you feel it on first touch." },
+        { stat: "Portugal", label: "Certified manufacturing", desc: "All our workshops are in Portugal. Full traceability, verified working conditions, zero opaque subcontracting." },
+        { stat: "OEKO-TEX", label: "Standard 100", desc: "Every fabric used is OEKO-TEX Standard 100 certified. No harmful chemicals, tested and approved." },
+        { stat: "30+", label: "Washes without distortion", desc: "Double-needle seams and selected materials guarantee a perfect hold after dozens of washes." }
       ]
     },
     {
@@ -56,21 +56,21 @@ const DATA = {
       label: "Reseller",
       headline: "A short range, a strong identity",
       items: [
-        { stat: "2", label: "Models only", desc: "Nomad 01 and Cabin 03. A clear, confident range — easy to present and sell." },
-        { stat: "–15 to –30 %", label: "Tiered pricing", desc: "Silver / Gold / Platinum grid by volume. Comfortable margins from 5 units." },
-        { stat: "100 %", label: "Made in Lorient", desc: "A strong selling point: French, handcrafted, documented manufacturing. Rare in this segment." },
-        { stat: "Limited", label: "Series production", desc: "The limited series model creates scarcity and urgency — easier to sell than a permanently available product." }
+        { stat: "4", label: "Core pieces", desc: "Tee 001, Tee 002, Cargo 001, Track 001. A confident range, easy to present — each piece justifies its price." },
+        { stat: "–20 %", label: "Reseller rate", desc: "Comfortable margins from 10 units. Progressive grid by volume, no time commitment." },
+        { stat: "100 %", label: "Made in Portugal", desc: "A strong selling point: European, certified, documented manufacturing. Rare at this price level." },
+        { stat: "Drop", label: "Limited production", desc: "The drops model creates scarcity and urgency — easier to sell than a permanently available product." }
       ]
     },
     {
       id: "pro",
-      label: "Professional / Distributor",
+      label: "Professional",
       headline: "Structured distribution, exclusivities possible",
       items: [
-        { stat: "–30 %", label: "Platinum rate", desc: "Reserved for commitments of 15 units and above. Negotiation possible for very large volumes." },
-        { stat: "Zone", label: "Geographic exclusivity", desc: "Exclusivity possible on a country or region outside France for distributors committed to volume." },
-        { stat: "STEP", label: "Technical resources", desc: "3D files, technical sheets, installation documentation available for your teams and clients." },
-        { stat: "OEM", label: "Co-branding possible", desc: "Open discussions for structural high-volume partnerships. Contact the workshop directly." }
+        { stat: "–30 %", label: "Platinum rate", desc: "Reserved for commitments of 30 pieces and above. Negotiation possible for very large volumes." },
+        { stat: "Zone", label: "Geographic exclusivity", desc: "Exclusivity possible on a region or country for distributors committed to volume." },
+        { stat: "Visuals", label: "Resources provided", desc: "HD product photos, technical sheets, look book available for your teams and site." },
+        { stat: "CST+", label: "Co-branding possible", desc: "Open discussions for high-volume partnerships or exclusive editions. Contact the studio." }
       ]
     }
   ]

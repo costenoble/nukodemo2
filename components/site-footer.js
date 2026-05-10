@@ -18,7 +18,7 @@ export function SiteFooter() {
     <footer className="border-t border-outline bg-surface-muted">
       <div className="page-shell grid gap-12 py-16 md:grid-cols-[1.3fr_1fr_1fr]">
         <div className="space-y-5">
-          <div className="font-headline text-3xl font-black uppercase tracking-[0.04em]">CST</div>
+          <div className="font-headline text-7xl font-black uppercase tracking-[0.04em] leading-none">CST</div>
           <p className="max-w-md text-sm leading-7 text-on-surface-muted">{tf("tagline")}</p>
         </div>
 
