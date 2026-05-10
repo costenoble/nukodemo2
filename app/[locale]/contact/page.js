@@ -20,14 +20,14 @@ export default async function ContactPage({ params }) {
         <img
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 h-full w-full object-cover opacity-30"
+          className="absolute inset-0 h-full w-full object-cover opacity-80"
           src="/images/contact-bg.jpg"
         />
-        <div className="absolute inset-0 bg-black/60" />
-        <div className="page-shell relative pt-36 pb-20 md:pt-44 md:pb-28 text-white">
+        <div className="absolute inset-0 bg-white/30" />
+        <div className="page-shell relative pt-36 pb-20 md:pt-44 md:pb-28">
           <p className="eyebrow mb-4">{t("eyebrow")}</p>
-          <h1 className="page-title text-white">{t("title")}</h1>
-          <p className="section-copy mt-6 text-white/70">{t("desc")}</p>
+          <h1 className="page-title text-black">{t("title")}</h1>
+          <p className="section-copy mt-6 text-black/60">{t("desc")}</p>
         </div>
       </section>
 
