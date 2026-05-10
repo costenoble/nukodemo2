@@ -87,7 +87,7 @@ export default async function HistoirePage({ params }) {
           </div>
           <div className="grid grid-cols-2 gap-px overflow-hidden border border-outline bg-outline">
             {[
-              { value: "Lorient", key: "statWorkshop" },
+              { value: "Paris", key: "statWorkshop" },
               { value: "100 %", key: "statManual" },
               { value: locale === "en" ? "Batch" : "Série", key: "statProduction" },
               { value: "0", key: "statStock" }
