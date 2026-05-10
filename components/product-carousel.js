@@ -53,9 +53,6 @@ export function ProductCarousel({ products }) {
               <div className="flex items-center justify-between md:block md:shrink-0 md:text-right">
                 <div>
                   <p className="font-headline text-2xl font-bold tracking-[-0.05em] md:text-3xl">
-                    {formatPrice(product.preorderPrice)}
-                  </p>
-                  <p className="mt-0.5 text-xs text-on-surface-muted line-through">
                     {formatPrice(product.price)}
                   </p>
                 </div>

@@ -35,7 +35,7 @@ export default async function HomePage({ params }) {
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <Link
               className="border border-white px-7 py-4 text-[11px] font-bold uppercase tracking-[0.2em] text-white transition hover:bg-white hover:text-black"
-              href="/precommande"
+              href="/particulier"
             >
               {t("preorderCta")}
             </Link>
@@ -142,7 +142,7 @@ export default async function HomePage({ params }) {
             ))}
             <Link
               className="mt-4 inline-flex border border-white px-7 py-4 text-[11px] font-bold uppercase tracking-[0.2em] text-white transition hover:bg-white hover:text-black"
-              href="/precommande"
+              href="/particulier"
             >
               {t("preorderCta")}
             </Link>

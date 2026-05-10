@@ -145,7 +145,7 @@ export default async function HistoirePage({ params }) {
         <h2 className="section-title mx-auto max-w-2xl">{t("ctaTitle")}</h2>
         <p className="section-copy mx-auto mt-4 max-w-lg text-center">{t("ctaDesc")}</p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-          <Link className="button-primary" href="/precommande">{tc("preorder")}</Link>
+          <Link className="button-primary" href="/particulier">{tc("preorder")}</Link>
           <Link className="button-secondary" href="/particulier">{t("ctaCollection")}</Link>
         </div>
       </section>

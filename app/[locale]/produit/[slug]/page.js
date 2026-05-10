@@ -1,14 +1,13 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 
+import { AddToCartForm } from "@/components/add-to-cart-form";
 import { ProductGallery } from "@/components/product-gallery";
-import { PreorderGauge } from "@/components/preorder-gauge";
 import { SectionHeading } from "@/components/section-heading";
 import { StickyProductCTA } from "@/components/sticky-product-cta";
 import { Link } from "@/i18n/navigation";
 import { formatPrice } from "@/lib/format";
 import { allProducts, getProductBySlug } from "@/lib/products";
-import { getPreorderCount, PREORDER_TOTAL } from "@/lib/preorder-count";
 
 export async function generateStaticParams() {
   return allProducts.flatMap((p) =>
@@ -21,10 +20,10 @@ export async function generateMetadata({ params }) {
   const product = getProductBySlug(slug);
   if (!product) return {};
   return {
-    title: `${product.name} — Poêle à bois compact | NUKÖ`,
+    title: `${product.name} — ${product.subtitle} | CST`,
     description: product.description,
     openGraph: {
-      title: `${product.name} | NUKÖ`,
+      title: `${product.name} | CST`,
       description: product.description,
       images: [{ url: product.heroImage, width: 1200, height: 630, alt: product.name }],
       type: "website"
@@ -40,7 +39,6 @@ export default async function ProduitPage({ params }) {
 
   const t = await getTranslations("product");
   const tc = await getTranslations("common");
-  const reserved = getPreorderCount();
 
   return (
     <>
@@ -50,8 +48,8 @@ export default async function ProduitPage({ params }) {
 
           <div className="flex flex-col justify-between gap-8">
             <div className="space-y-5">
-              <span className="inline-block border border-secondary bg-secondary/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-secondary">
-                {tc("preorderBadge")}
+              <span className="inline-block border border-outline px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-muted">
+                {product.category}
               </span>
               <h1 className="font-headline text-6xl font-bold uppercase tracking-[-0.07em] lg:text-7xl">
                 {product.name}
@@ -68,35 +66,7 @@ export default async function ProduitPage({ params }) {
               ))}
             </div>
 
-            <div className="border border-outline bg-background p-6">
-              <div className="flex items-end justify-between gap-4">
-                <div>
-                  <p className="eyebrow mb-2">{tc("launchPrice")}</p>
-                  <p className="font-headline text-5xl font-bold tracking-[-0.06em]">
-                    {formatPrice(product.preorderPrice)}
-                  </p>
-                  <p className="mt-1 text-sm text-on-surface-muted line-through">{formatPrice(product.price)}</p>
-                </div>
-                <div className="text-right text-sm leading-6 text-on-surface-muted">
-                  <p>{tc("deliveryLabel")}</p>
-                  <p>{tc("shippingLabel")}</p>
-                </div>
-              </div>
-              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                <Link
-                  className="button-primary flex-1 justify-center"
-                  href={`/precommande?model=${product.id}`}
-                >
-                  {tc("preorder")}
-                </Link>
-                <Link className="button-secondary flex-1 justify-center" href="/contact">
-                  {tc("askQuestion")}
-                </Link>
-              </div>
-              <p className="mt-4 text-xs leading-6 text-on-surface-muted">
-                {t("ctaSecurityNote")}
-              </p>
-            </div>
+            <AddToCartForm product={product} />
           </div>
         </div>
       </section>
@@ -180,53 +150,24 @@ export default async function ProduitPage({ params }) {
         </div>
       </section>
 
-      <section className="page-shell page-section">
-        <SectionHeading eyebrow={t("docsEyebrow")} title={t("docsTitle")} description={t("docsDesc")} />
-        <div className="mt-12 grid gap-4 md:grid-cols-2">
-          {product.documents.map((doc) => (
-            <div key={doc.filename} className="flex items-center gap-5 border border-outline bg-surface-muted p-5">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center border border-outline bg-background text-[10px] font-bold uppercase tracking-[0.1em] text-secondary">
-                PDF
-              </div>
-              <div className="flex-1">
-                <p className="font-medium">{doc.label}</p>
-                <p className="text-xs text-on-surface-muted">{doc.filename}</p>
-              </div>
-              <a className="button-secondary px-4 py-3 text-xs" download href={`/docs/${doc.filename}`}>
-                {tc("download")}
-              </a>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="border-t border-outline bg-[#1d1c18] py-16 text-white">
-        <div className="page-shell grid gap-10 lg:grid-cols-[1fr_360px] lg:items-center">
-          <div className="flex flex-col gap-6">
-            <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-[#dcbf96]">{t("ctaEyebrow")}</p>
-            <h2 className="font-headline text-4xl font-bold uppercase tracking-[-0.06em] md:text-6xl">
-              {t("ctaTitle", { name: product.name })}
+      {/* CTA bas de page */}
+      <section className="border-t border-outline bg-black py-16 text-white">
+        <div className="page-shell flex flex-col items-center gap-6 text-center md:flex-row md:justify-between md:text-left">
+          <div className="space-y-3">
+            <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-white/40">CST — {product.category}</p>
+            <h2 className="font-headline text-4xl font-bold uppercase tracking-[-0.06em] md:text-5xl">
+              {product.name}
             </h2>
-            <p className="max-w-lg text-sm leading-7 text-white/70">
-              {tc("deliveryLabel")}. {tc("shippingLabel")}. {t("ctaSecurityNote")}
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <Link
-                className="inline-flex items-center gap-3 bg-white px-8 py-4 text-[11px] font-bold uppercase tracking-[0.2em] text-[#141410] transition hover:bg-[#dcbf96]"
-                href={`/precommande?model=${product.id}`}
-              >
-                {tc("preorder")} — {formatPrice(product.preorderPrice)}
-              </Link>
-              <Link
-                className="border border-white/30 px-8 py-4 text-[11px] font-bold uppercase tracking-[0.2em] text-white/80 transition hover:border-[#dcbf96] hover:text-[#dcbf96]"
-                href="/contact"
-              >
-                {t("ctaQuestionBtn")}
-              </Link>
-            </div>
+            <p className="text-sm text-white/50">{product.shippingLabel}</p>
           </div>
-          <div className="border border-white/15 bg-white/5 p-6">
-            <PreorderGauge compact reserved={reserved} total={PREORDER_TOTAL} />
+          <div className="flex items-center gap-6">
+            <p className="font-headline text-4xl font-bold tracking-[-0.06em]">{formatPrice(product.price)}</p>
+            <Link
+              className="border border-white px-8 py-4 text-[11px] font-bold uppercase tracking-[0.2em] text-white transition hover:bg-white hover:text-black"
+              href="/panier"
+            >
+              Voir le panier
+            </Link>
           </div>
         </div>
       </section>

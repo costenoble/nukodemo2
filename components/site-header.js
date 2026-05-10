@@ -113,7 +113,7 @@ export function SiteHeader() {
             {/* Précommander — desktop */}
             <Link
               className="hidden border border-white/60 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.18em] text-white transition hover:border-white hover:bg-white hover:text-black md:inline-flex"
-              href="/precommande"
+              href="/particulier"
             >
               {t("preorder")}
             </Link>
@@ -121,7 +121,7 @@ export function SiteHeader() {
             {/* Précommander — mobile */}
             <Link
               className="border border-white/50 px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.14em] text-white md:hidden"
-              href="/precommande"
+              href="/particulier"
               onClick={() => setIsMenuOpen(false)}
             >
               {t("preorder")}

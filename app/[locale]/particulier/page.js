@@ -89,7 +89,7 @@ export default async function ParticulierPage({ params }) {
 
               {/* Prix */}
               <div>
-                <p className="eyebrow mb-1">{t("preorderPrice")}</p>
+                <p className="eyebrow mb-1">Prix</p>
                 <p className="font-headline text-5xl font-black tracking-[-0.06em]">{formatPrice(product.price)}</p>
               </div>
 
