@@ -76,7 +76,7 @@ export default async function HistoirePage({ params }) {
 
       <section className="page-shell page-section grid gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
         <div className="overflow-hidden border border-outline bg-surface">
-          <ProductImage alt="CST fabrication" category="Pantalon" className="h-[500px] w-full object-cover" src="" />
+          <img alt="Studio CST Paris" className="h-[500px] w-full object-cover" src="/images/studio-paris.jpg" />
         </div>
         <div className="space-y-6">
           <p className="eyebrow">{t("workshopEyebrow")}</p>
