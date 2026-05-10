@@ -5,7 +5,7 @@ import { useState } from "react";
 const initialValues = {
   name: "",
   email: "",
-  projectType: "Van / Fourgon",
+  subject: "Question taille",
   message: ""
 };
 
@@ -70,16 +70,17 @@ export function ContactForm() {
       </div>
 
       <label className="block">
-        <span className="eyebrow mb-3 block">Type de projet</span>
+        <span className="eyebrow mb-3 block">Sujet</span>
         <select
           className="input-field"
-          onChange={(event) => setValues((current) => ({ ...current, projectType: event.target.value }))}
-          value={values.projectType}
+          onChange={(event) => setValues((current) => ({ ...current, subject: event.target.value }))}
+          value={values.subject}
         >
-          <option>Van / Fourgon</option>
-          <option>Tiny House</option>
-          <option>Chalet compact</option>
-          <option>Atelier / Studio</option>
+          <option>Question taille</option>
+          <option>Question matière / entretien</option>
+          <option>Suivi de commande</option>
+          <option>Retour / échange</option>
+          <option>Partenariat / revendeur</option>
           <option>Autre</option>
         </select>
       </label>
