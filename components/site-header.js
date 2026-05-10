@@ -140,7 +140,7 @@ export function SiteHeader() {
         {/* Contenu centré verticalement */}
         <div className="flex flex-1 flex-col items-start justify-center px-8 md:px-16">
           <nav className="w-full space-y-1">
-            {[...navItems, { href: "/professionnel", key: "pro" }].map((item, i) => (
+            {navItems.map((item, i) => (
               <div
                 key={item.href}
                 className="overflow-hidden"

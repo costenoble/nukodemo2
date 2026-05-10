@@ -84,7 +84,7 @@ export function HomeSplit() {
           </p>
           <Link
             className="mt-10 inline-flex items-center gap-3 border border-white px-7 py-4 text-[11px] font-bold uppercase tracking-[0.2em] text-white transition hover:bg-white hover:text-black"
-            href="/professionnel"
+            href="/contact"
           >
             {t("splitProCta")} →
           </Link>
