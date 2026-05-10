@@ -56,7 +56,7 @@ export default async function HistoirePage({ params }) {
           </div>
         </div>
         <div className="overflow-hidden border border-outline bg-surface">
-          <ProductImage alt="CST studio" category="T-shirt" className="h-[520px] w-full object-cover" src="" />
+          <img alt="L'origine CST" className="h-[520px] w-full object-cover" src="/images/origine-building.jpg" />
         </div>
       </section>
 
