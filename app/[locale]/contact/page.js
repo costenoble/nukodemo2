@@ -16,11 +16,18 @@ export default async function ContactPage({ params }) {
 
   return (
     <>
-      <section className="border-b border-outline bg-surface-muted">
-        <div className="page-shell pt-36 pb-20 md:pt-44 md:pb-28">
+      <section className="relative overflow-hidden border-b border-outline">
+        <img
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover opacity-30"
+          src="/images/contact-bg.jpg"
+        />
+        <div className="absolute inset-0 bg-black/60" />
+        <div className="page-shell relative pt-36 pb-20 md:pt-44 md:pb-28 text-white">
           <p className="eyebrow mb-4">{t("eyebrow")}</p>
-          <h1 className="page-title max-w-4xl">{t("title")}</h1>
-          <p className="section-copy mt-6">{t("desc")}</p>
+          <h1 className="page-title text-white">{t("title")}</h1>
+          <p className="section-copy mt-6 text-white/70">{t("desc")}</p>
         </div>
       </section>
 
