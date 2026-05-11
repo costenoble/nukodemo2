@@ -5,6 +5,8 @@ import { TransitionLink as Link } from "@/components/page-transition";
 import { AudienceAccordion } from "@/components/audience-accordion";
 import { FumiList } from "@/components/fumi-list";
 import { HomeSplit } from "@/components/home-split";
+import { Marquee } from "@/components/marquee";
+import { ParallaxHero } from "@/components/parallax-hero";
 import { ProductCarousel } from "@/components/product-carousel";
 import { allProducts } from "@/lib/products";
 
@@ -16,10 +18,10 @@ export default async function HomePage({ params }) {
     <>
       {/* ── HERO ── */}
       <section className="relative flex min-h-screen flex-col overflow-hidden bg-black">
-        <img
-          alt="Poele NUKO en situation"
-          className="absolute inset-0 h-full w-full object-cover opacity-40"
+        <ParallaxHero
           src="/images/hero-fashion.jpg"
+          alt="CST — pièce en situation"
+          imageClassName="opacity-40"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" />
 
@@ -52,6 +54,9 @@ export default async function HomePage({ params }) {
           </div>
         </div>
       </section>
+
+      {/* ── MARQUEE ── */}
+      <Marquee text="DROP 01 DISPONIBLE · FABRIQUÉ AU PORTUGAL · ÉDITION LIMITÉE · COTON 320 G/M² · LIVRAISON OFFERTE ·" />
 
       {/* ── DEUX PANNEAUX ── */}
       <HomeSplit />

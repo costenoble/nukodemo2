@@ -5,6 +5,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 
 import { useCart } from "@/components/cart-provider";
 import { TransitionLink } from "@/components/page-transition";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 
@@ -148,6 +149,9 @@ export function SiteHeader() {
                 </span>
               ))}
             </div>
+
+            {/* Dark mode toggle */}
+            <ThemeToggle />
 
             {/* Panier */}
             <TransitionLink className="relative text-white transition-opacity hover:opacity-60" href="/panier" aria-label={t("cart")}>

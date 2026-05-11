@@ -4,10 +4,12 @@ import { useState } from "react";
 
 import { useCart } from "@/components/cart-provider";
 import { TransitionLink as Link } from "@/components/page-transition";
+import { useToast } from "@/components/toast";
 import { formatPrice } from "@/lib/format";
 
 export function AddToCartForm({ product }) {
   const { addItem } = useCart();
+  const { toast } = useToast();
   const [selectedSize, setSelectedSize] = useState(product.sizes?.[2] ?? product.sizes?.[0] ?? null);
   const [selectedColor, setSelectedColor] = useState(product.colors?.[0] ?? null);
   const [added, setAdded] = useState(false);
@@ -17,6 +19,7 @@ export function AddToCartForm({ product }) {
     addItem(product.id, 1, { unitPrice: product.price, configLabel: label || undefined });
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
+    toast(`${product.name} ajouté au panier`);
   }
 
   return (

@@ -1,7 +1,10 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 
+import Image from "next/image";
+
 import { AddToCartForm } from "@/components/add-to-cart-form";
+import { AnimatedStat } from "@/components/animated-stat";
 import { ProductGallery } from "@/components/product-gallery";
 import { SectionHeading } from "@/components/section-heading";
 import { StickyProductCTA } from "@/components/sticky-product-cta";
@@ -59,10 +62,7 @@ export default async function ProduitPage({ params }) {
 
             <div className="grid grid-cols-2 gap-px overflow-hidden border border-outline bg-outline">
               {product.stats.map((stat) => (
-                <div key={stat.label} className="bg-background p-6">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-on-surface-muted">{stat.label}</p>
-                  <p className="mt-1.5 font-headline text-3xl font-bold tracking-[-0.05em]">{stat.value}</p>
-                </div>
+                <AnimatedStat key={stat.label} label={stat.label} value={stat.value} />
               ))}
             </div>
 
@@ -92,11 +92,13 @@ export default async function ProduitPage({ params }) {
 
       <section className="border-y border-outline bg-surface-muted">
         <div className="page-shell grid gap-10 py-20 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-          <div className="overflow-hidden border border-outline">
-            <img
+          <div className="relative h-[500px] overflow-hidden border border-outline">
+            <Image
               alt={`${product.name} detail`}
-              className="h-[500px] w-full object-cover"
               src={product.gallery[1] ?? product.gallery[0]}
+              fill
+              sizes="(min-width: 1024px) 45vw, 100vw"
+              className="object-cover"
             />
           </div>
           <div className="space-y-8">

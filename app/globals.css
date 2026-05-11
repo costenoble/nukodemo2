@@ -17,6 +17,18 @@
   --outline: #e0e0de;
 }
 
+.dark {
+  --background: #111111;
+  --surface: #1a1a1a;
+  --surface-muted: #1f1f1f;
+  --surface-soft: #252525;
+  --surface-strong: #2e2e2e;
+  --primary: #f0f0ee;
+  --on-surface: #f0f0ee;
+  --on-surface-muted: #999999;
+  --outline: #2e2e2e;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -115,6 +127,59 @@ body {
 [data-hero-cta] {
   will-change: opacity, transform;
   animation: heroFadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.55s both;
+}
+
+/* ── Custom cursor ──────────────────────────────────────────────────────── */
+@media (pointer: fine) {
+  * { cursor: none !important; }
+
+  .cursor-dot {
+    position: fixed;
+    top: 0; left: 0;
+    width: 6px; height: 6px;
+    background: var(--primary);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    will-change: transform;
+  }
+
+  .cursor-ring {
+    position: fixed;
+    top: 0; left: 0;
+    width: 30px; height: 30px;
+    border: 1.5px solid var(--primary);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    will-change: transform;
+    transition: width 0.25s ease, height 0.25s ease, opacity 0.25s ease;
+  }
+
+  .cursor-ring[data-hover] {
+    width: 46px; height: 46px;
+    opacity: 0.5;
+  }
+}
+
+/* ── Marquee ────────────────────────────────────────────────────────────── */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-100%); }
+}
+
+.marquee-inner {
+  animation: marquee 22s linear infinite;
+}
+
+/* ── Toast ──────────────────────────────────────────────────────────────── */
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.toast-enter {
+  animation: toastIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
