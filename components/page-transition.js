@@ -12,20 +12,59 @@ export function usePageTransition() {
   return ctx;
 }
 
-const ENTER_DURATION = 900;
-const EXIT_DURATION  = 900;
-const NAVIGATE_AFTER = 600;
+// ── Timing constants (ms) ──────────────────────────────────────────────────
+const OVERLAY_ENTER   = 600;  // overlay slides up
+const LOGO_DELAY      = 80;   // logo starts animating after overlay begins
+const LOGO_IN         = 500;  // logo entrance duration
+const NAVIGATE_AT     = 400;  // when router.push fires (page loads under overlay)
+const HOLD            = 300;  // black screen hold after overlay fully covers
+const LOGO_EXIT       = 250;  // logo fade-out duration
+const OVERLAY_EXIT    = 700;  // overlay slides down
 const EASE = "cubic-bezier(0.76,0,0.24,1)";
 
-export function PageTransitionProvider({ children }) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const overlayRef = useRef(null);
-  const logoRef    = useRef(null);
-  const isAnimatingRef   = useRef(false);
-  const prevPathnameRef  = useRef(pathname);
+// Start of overlay exit phase (after enter + hold)
+const EXIT_START = OVERLAY_ENTER + HOLD; // 900ms
 
-  // ── EXIT: pathname changed → animate logo out, then slide overlay down ──
+function animateTitlesIn() {
+  const els = document.querySelectorAll(".page-title, .eyebrow");
+  els.forEach((el, i) => {
+    // Reset to hidden while still under the overlay
+    el.style.transition = "none";
+    el.style.opacity    = "0";
+    el.style.transform  = "translateY(50px)";
+  });
+
+  // Kick off animation on next frame (overlay is already moving away)
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      els.forEach((el, i) => {
+        const delay = 0.05 + i * 0.07;
+        el.style.transition = `opacity 0.7s ease ${delay}s, transform 0.85s cubic-bezier(0.16,1,0.3,1) ${delay}s`;
+        el.style.opacity    = "1";
+        el.style.transform  = "translateY(0)";
+      });
+
+      // Clean up inline styles after animation so nothing is left dangling
+      setTimeout(() => {
+        els.forEach(el => {
+          el.style.transition = "";
+          el.style.opacity    = "";
+          el.style.transform  = "";
+        });
+      }, 1200);
+    });
+  });
+}
+
+export function PageTransitionProvider({ children }) {
+  const router          = useRouter();
+  const pathname        = usePathname();
+  const overlayRef      = useRef(null);
+  const logoRef         = useRef(null);
+  const isAnimatingRef  = useRef(false);
+  const prevPathnameRef = useRef(pathname);
+
+  // ── Phase 2: pathname changed → slide overlay back down ──────────────────
   useEffect(() => {
     if (pathname === prevPathnameRef.current) return;
     prevPathnameRef.current = pathname;
@@ -34,35 +73,41 @@ export function PageTransitionProvider({ children }) {
     const logo    = logoRef.current;
     if (!overlay) return;
 
-    // 1. Fade logo out
-    if (logo) {
-      logo.style.transition = `opacity 0.25s ease, transform 0.25s ease`;
-      logo.style.opacity    = "0";
-      logo.style.transform  = "scale(0.9) translateY(-20px)";
-    }
+    // Wait for the full enter + hold before exiting
+    const exitTimer = setTimeout(() => {
+      // Fade logo out while overlay starts moving
+      if (logo) {
+        logo.style.transition = `opacity ${LOGO_EXIT}ms ease, letter-spacing ${LOGO_EXIT}ms ease, transform ${LOGO_EXIT}ms ease`;
+        logo.style.opacity      = "0";
+        logo.style.letterSpacing = "0.3em";
+        logo.style.transform    = "scale(0.95)";
+      }
 
-    // 2. After short pause, slide overlay down
-    const slideTimer = setTimeout(() => {
-      overlay.style.transition = `transform ${EXIT_DURATION}ms ${EASE}`;
+      // Animate page titles (reset + slide up from below)
+      animateTitlesIn();
+
+      // Slide overlay down
+      overlay.style.transition = `transform ${OVERLAY_EXIT}ms ${EASE}`;
       overlay.style.transform  = "translateY(100%)";
 
       const doneTimer = setTimeout(() => {
         isAnimatingRef.current = false;
-        // Reset logo for next enter
+        // Reset logo for next use
         if (logo) {
-          logo.style.transition = "none";
-          logo.style.opacity    = "0";
-          logo.style.transform  = "scale(0.85) translateY(30px)";
+          logo.style.transition    = "none";
+          logo.style.opacity       = "0";
+          logo.style.letterSpacing = "0.5em";
+          logo.style.transform     = "scale(1.05)";
         }
-      }, EXIT_DURATION);
+      }, OVERLAY_EXIT);
 
       return () => clearTimeout(doneTimer);
-    }, 200);
+    }, EXIT_START);
 
-    return () => clearTimeout(slideTimer);
+    return () => clearTimeout(exitTimer);
   }, [pathname]);
 
-  // ── ENTER: slide overlay up, animate logo in, then navigate ──
+  // ── Phase 1: click → overlay slides up, logo animates in ─────────────────
   const navigate = useCallback(
     (href) => {
       if (isAnimatingRef.current) return;
@@ -77,30 +122,30 @@ export function PageTransitionProvider({ children }) {
         return;
       }
 
-      // Reset logo to start state before animating in
+      // Reset logo to wide/invisible start state
       if (logo) {
-        logo.style.transition = "none";
-        logo.style.opacity    = "0";
-        logo.style.transform  = "scale(0.85) translateY(30px)";
+        logo.style.transition    = "none";
+        logo.style.opacity       = "0";
+        logo.style.letterSpacing = "0.5em";
+        logo.style.transform     = "scale(1.05)";
       }
 
       // Slide overlay up
-      overlay.style.transition = `transform ${ENTER_DURATION}ms ${EASE}`;
+      overlay.style.transition = `transform ${OVERLAY_ENTER}ms ${EASE}`;
       overlay.style.transform  = "translateY(0)";
 
-      // Animate logo in after overlay starts rising
+      // Logo enters: compress letter-spacing + fade in
       const logoTimer = setTimeout(() => {
         if (logo) {
-          logo.style.transition = `opacity 0.5s ease, transform 0.6s cubic-bezier(0.16,1,0.3,1)`;
-          logo.style.opacity    = "1";
-          logo.style.transform  = "scale(1) translateY(0)";
+          logo.style.transition    = `opacity ${LOGO_IN}ms cubic-bezier(0.16,1,0.3,1), letter-spacing ${LOGO_IN}ms cubic-bezier(0.16,1,0.3,1), transform ${LOGO_IN}ms cubic-bezier(0.16,1,0.3,1)`;
+          logo.style.opacity       = "1";
+          logo.style.letterSpacing = "-0.04em";
+          logo.style.transform     = "scale(1)";
         }
-      }, 150);
+      }, LOGO_DELAY);
 
-      // Navigate mid-animation
-      const navTimer = setTimeout(() => {
-        router.push(href);
-      }, NAVIGATE_AFTER);
+      // Navigate while overlay is covering the page
+      const navTimer = setTimeout(() => router.push(href), NAVIGATE_AT);
 
       return () => {
         clearTimeout(logoTimer);
@@ -124,11 +169,11 @@ export function PageTransitionProvider({ children }) {
           ref={logoRef}
           className="select-none font-headline font-black uppercase text-white"
           style={{
-            fontSize: "clamp(80px, 18vw, 260px)",
-            letterSpacing: "-0.04em",
-            lineHeight: 1,
-            opacity: 0,
-            transform: "scale(0.85) translateY(30px)",
+            fontSize:      "clamp(80px, 20vw, 280px)",
+            lineHeight:    1,
+            opacity:       0,
+            letterSpacing: "0.5em",
+            transform:     "scale(1.05)",
           }}
         >
           CST
@@ -146,10 +191,7 @@ export function TransitionLink({ href, children, onClick, ...props }) {
     (href.startsWith("http") || href.startsWith("mailto:") || href.startsWith("tel:"));
 
   function handleClick(e) {
-    if (isExternal) {
-      onClick?.();
-      return;
-    }
+    if (isExternal) { onClick?.(); return; }
     e.preventDefault();
     onClick?.();
     navigate(href);
