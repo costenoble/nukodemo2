@@ -120,7 +120,7 @@ export function SiteHeader() {
           {/* Logo — centré */}
           <div className="flex w-1/3 justify-center md:flex-1 md:justify-center">
             <TransitionLink
-              className="font-headline text-lg font-black uppercase tracking-[0.06em] text-white md:text-xl"
+              className="font-headline text-2xl font-black uppercase tracking-[0.06em] text-white md:text-3xl"
               href="/"
               onClick={() => setIsMenuOpen(false)}
             >
