@@ -1,6 +1,6 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
 
-import { Link } from "@/i18n/navigation";
+import { TransitionLink as Link } from "@/components/page-transition";
 import { ProductImage } from "@/components/product-image";
 import { formatPrice } from "@/lib/format";
 import { allProducts } from "@/lib/products";

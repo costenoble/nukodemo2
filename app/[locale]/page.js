@@ -1,7 +1,7 @@
 import { setRequestLocale } from "next-intl/server";
 import { getTranslations } from "next-intl/server";
 
-import { Link } from "@/i18n/navigation";
+import { TransitionLink as Link } from "@/components/page-transition";
 import { AudienceAccordion } from "@/components/audience-accordion";
 import { FumiList } from "@/components/fumi-list";
 import { HomeSplit } from "@/components/home-split";

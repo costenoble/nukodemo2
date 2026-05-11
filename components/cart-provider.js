@@ -3,7 +3,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 import { getFumiProductById } from "@/lib/fumisterie";
-import { allProducts, getAccessoryById, getProductById } from "@/lib/products";
+import { allProducts, getProductById } from "@/lib/products";
 
 const CART_STORAGE_KEY = "hearth-cart";
 const CartContext = createContext(null);
@@ -15,16 +15,14 @@ function sanitizeItems(items) {
 
   return items
     .map((item) => {
-      const isProduct = Boolean(getProductById(item?.productId));
-      const isAccessory = Boolean(getAccessoryById(item?.productId));
-      const isFumi = Boolean(getFumiProductById(item?.productId));
-      if (!isProduct && !isAccessory && !isFumi) return null;
+      const product = getProductById(item?.productId) ?? getFumiProductById(item?.productId);
+      if (!product) return null;
       const quantity = Math.floor(Number(item?.quantity || 0));
       if (quantity <= 0) return null;
       return {
         productId: item.productId,
         quantity,
-        unitPrice: typeof item.unitPrice === "number" ? item.unitPrice : undefined,
+        unitPrice: product.price,
         configLabel: typeof item.configLabel === "string" ? item.configLabel : undefined,
         isAccessory: Boolean(item.isAccessory)
       };
@@ -33,11 +31,8 @@ function sanitizeItems(items) {
 }
 
 function getItemPrice(item) {
-  if (typeof item.unitPrice === "number") return item.unitPrice;
-  const product = getProductById(item.productId);
-  if (product) return product.price;
-  const accessory = getAccessoryById(item.productId);
-  return accessory?.price ?? 0;
+  const product = getProductById(item.productId) ?? getFumiProductById(item.productId);
+  return product?.price ?? 0;
 }
 
 export function CartProvider({ children }) {

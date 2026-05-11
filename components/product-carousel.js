@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import { useTranslations } from "next-intl";
 
-import { Link } from "@/i18n/navigation";
+import { TransitionLink as Link } from "@/components/page-transition";
 import { formatPrice } from "@/lib/format";
 import { ProductImage } from "@/components/product-image";
 

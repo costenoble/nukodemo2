@@ -1,7 +1,7 @@
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 
-import { Link } from "@/i18n/navigation";
+import { TransitionLink as Link } from "@/components/page-transition";
 import { getJournalArticleBySlug, journalArticles } from "@/lib/content";
 
 export async function generateStaticParams() {

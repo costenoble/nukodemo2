@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl";
 
-import { Link } from "@/i18n/navigation";
+import { TransitionLink as Link } from "@/components/page-transition";
 import { atelierDetails } from "@/lib/content";
 
 const navItems = [

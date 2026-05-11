@@ -1,6 +1,6 @@
 import { setRequestLocale } from "next-intl/server";
 
-import { Link } from "@/i18n/navigation";
+import { TransitionLink as Link } from "@/components/page-transition";
 
 export async function generateMetadata({ params }) {
   const { locale } = await params;

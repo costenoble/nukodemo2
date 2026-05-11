@@ -5,7 +5,7 @@ import { AddToCartForm } from "@/components/add-to-cart-form";
 import { ProductGallery } from "@/components/product-gallery";
 import { SectionHeading } from "@/components/section-heading";
 import { StickyProductCTA } from "@/components/sticky-product-cta";
-import { Link } from "@/i18n/navigation";
+import { TransitionLink as Link } from "@/components/page-transition";
 import { formatPrice } from "@/lib/format";
 import { allProducts, getProductBySlug } from "@/lib/products";
 

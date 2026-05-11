@@ -1,12 +1,18 @@
 import { buildCustomerContactAck, buildSellerContactEmail } from "@/lib/email-templates";
 import { isMailerConfigured, sendEmail } from "@/lib/mailer";
+import { getClientIp, rateLimit } from "@/lib/rate-limit";
 
 export async function POST(request) {
+  const { success } = rateLimit(getClientIp(request), { limit: 3, windowMs: 60_000 });
+  if (!success) {
+    return Response.json({ error: "Trop de requêtes. Veuillez patienter." }, { status: 429 });
+  }
+
   try {
     const payload = await request.json();
     const name = String(payload?.name || "").trim();
     const email = String(payload?.email || "").trim();
-    const projectType = String(payload?.projectType || "").trim();
+    const projectType = String(payload?.projectType || payload?.subject || "").trim();
     const message = String(payload?.message || "").trim();
 
     if (!name || !email || !message) {

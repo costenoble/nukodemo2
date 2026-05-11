@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 import { useCart } from "@/components/cart-provider";
-import { Link } from "@/i18n/navigation";
+import { TransitionLink as Link } from "@/components/page-transition";
 import { formatPrice } from "@/lib/format";
 
 export function AddToCartForm({ product }) {
@@ -46,8 +46,10 @@ export function AddToCartForm({ product }) {
               {product.colors.map((color) => (
                 <button
                   key={color.name}
-                  title={color.name}
                   type="button"
+                  aria-label={color.name}
+                  aria-pressed={selectedColor?.name === color.name}
+                  title={color.name}
                   onClick={() => setSelectedColor(color)}
                   className={`h-7 w-7 border-2 transition-all ${
                     selectedColor?.name === color.name ? "border-primary scale-110" : "border-transparent hover:border-primary/40"

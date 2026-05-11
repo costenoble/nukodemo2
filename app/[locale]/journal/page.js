@@ -1,7 +1,7 @@
 import { setRequestLocale } from "next-intl/server";
 
 import { SectionHeading } from "@/components/section-heading";
-import { Link } from "@/i18n/navigation";
+import { TransitionLink as Link } from "@/components/page-transition";
 import { journalArticles } from "@/lib/content";
 
 export async function generateMetadata({ params }) {

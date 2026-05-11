@@ -7,6 +7,20 @@ import { getStripe } from "@/lib/stripe";
 
 export const dynamic = "force-dynamic";
 
+const processedSessions = new Set();
+const MAX_PROCESSED = 2000;
+
+function isAlreadyProcessed(sessionId) {
+  return processedSessions.has(sessionId);
+}
+
+function markProcessed(sessionId) {
+  if (processedSessions.size >= MAX_PROCESSED) {
+    processedSessions.delete(processedSessions.values().next().value);
+  }
+  processedSessions.add(sessionId);
+}
+
 export async function POST(request) {
   const signature = request.headers.get("stripe-signature");
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -35,6 +49,11 @@ export async function POST(request) {
   if (session.payment_status !== "paid") {
     return Response.json({ received: true, ignored: true });
   }
+
+  if (isAlreadyProcessed(session.id)) {
+    return Response.json({ received: true, deduplicated: true });
+  }
+  markProcessed(session.id);
 
   if (!isMailerConfigured()) {
     return Response.json({

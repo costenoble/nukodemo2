@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { useCart } from "@/components/cart-provider";
-import { Link } from "@/i18n/navigation";
+import { TransitionLink as Link } from "@/components/page-transition";
 import { formatPrice } from "@/lib/format";
 
 export function StickyProductCTA({ product }) {

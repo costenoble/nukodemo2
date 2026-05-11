@@ -1,4 +1,6 @@
-import { getAccessoryById, getProductById } from "@/lib/products";
+import { getProductById } from "@/lib/products";
+import { getFumiProductById } from "@/lib/fumisterie";
+import { getClientIp, rateLimit } from "@/lib/rate-limit";
 import { getBaseUrl, getStripe } from "@/lib/stripe";
 
 const allowedCountries = ["FR", "BE", "CH", "DE", "ES", "IT", "LU", "NL", "PT"];
@@ -8,13 +10,18 @@ function generateOrderNumber() {
 }
 
 export async function POST(request) {
+  const { success } = rateLimit(getClientIp(request), { limit: 5, windowMs: 60_000 });
+  if (!success) {
+    return Response.json({ error: "Trop de requêtes. Veuillez patienter." }, { status: 429 });
+  }
+
   try {
     const payload = await request.json();
     const items = Array.isArray(payload?.items) ? payload.items : [];
 
     const validatedItems = items
       .map((item) => {
-        const product = getProductById(item?.productId) ?? getAccessoryById(item?.productId);
+        const product = getProductById(item?.productId) ?? getFumiProductById(item?.productId);
         const parsedQuantity = Number(item?.quantity);
         const quantity =
           Number.isFinite(parsedQuantity) && parsedQuantity > 0
@@ -25,15 +32,10 @@ export async function POST(request) {
           return null;
         }
 
-        const unitPrice =
-          typeof item?.unitPrice === "number" && item.unitPrice > 0
-            ? item.unitPrice
-            : product.price;
-
         return {
           product,
           quantity,
-          unitPrice,
+          unitPrice: product.price,
           configLabel: typeof item?.configLabel === "string" ? item.configLabel : null
         };
       })

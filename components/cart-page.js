@@ -4,48 +4,35 @@ import { useTranslations } from "next-intl";
 
 import { CheckoutButton } from "@/components/checkout-button";
 import { useCart } from "@/components/cart-provider";
-import { Link } from "@/i18n/navigation";
+import { TransitionLink as Link } from "@/components/page-transition";
 import { getFumiProductById } from "@/lib/fumisterie";
 import { formatPrice } from "@/lib/format";
-import { getAccessoryById, getProductById } from "@/lib/products";
+import { getProductById } from "@/lib/products";
 
 function getItemDetails(item) {
-  if (item.isAccessory) {
-    const accessory = getAccessoryById(item.productId);
-    if (accessory) {
-      return {
-        id: item.productId,
-        name: accessory.name,
-        subtitle: accessory.description,
-        image: accessory.image,
-        category: "Accessoire",
-        unitPrice: item.unitPrice ?? accessory.price
-      };
-    }
-    const fumi = getFumiProductById(item.productId);
-    if (fumi) {
-      return {
-        id: item.productId,
-        name: fumi.name,
-        subtitle: item.configLabel ?? fumi.ref,
-        image: "/images/nomad-detail.jpg",
-        category: "Fumisterie",
-        unitPrice: item.unitPrice ?? fumi.price
-      };
-    }
-    return null;
-  }
   const product = getProductById(item.productId);
-  return product
-    ? {
-        id: item.productId,
-        name: product.name,
-        subtitle: item.configLabel ?? product.subtitle,
-        image: product.heroImage,
-        category: product.category,
-        unitPrice: item.unitPrice ?? product.price
-      }
-    : null;
+  if (product) {
+    return {
+      id: item.productId,
+      name: product.name,
+      subtitle: item.configLabel ?? product.subtitle,
+      image: product.heroImage,
+      category: product.category,
+      unitPrice: product.price
+    };
+  }
+  const fumi = getFumiProductById(item.productId);
+  if (fumi) {
+    return {
+      id: item.productId,
+      name: fumi.name,
+      subtitle: item.configLabel ?? fumi.ref,
+      image: "/images/nomad-detail.jpg",
+      category: "Fumisterie",
+      unitPrice: fumi.price
+    };
+  }
+  return null;
 }
 
 export function CartPage() {

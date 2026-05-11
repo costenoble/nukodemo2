@@ -5,7 +5,7 @@ import { useState } from "react";
 const initialValues = {
   name: "",
   email: "",
-  subject: "Question taille",
+  projectType: "Question taille",
   message: ""
 };
 
@@ -73,8 +73,8 @@ export function ContactForm() {
         <span className="eyebrow mb-3 block">Sujet</span>
         <select
           className="input-field"
-          onChange={(event) => setValues((current) => ({ ...current, subject: event.target.value }))}
-          value={values.subject}
+          onChange={(event) => setValues((current) => ({ ...current, projectType: event.target.value }))}
+          value={values.projectType}
         >
           <option>Question taille</option>
           <option>Question matière / entretien</option>

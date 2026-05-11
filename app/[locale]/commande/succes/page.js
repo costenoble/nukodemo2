@@ -1,7 +1,7 @@
 import { setRequestLocale } from "next-intl/server";
 
 import { ClearCartOnSuccess } from "@/components/clear-cart-on-success";
-import { Link } from "@/i18n/navigation";
+import { TransitionLink as Link } from "@/components/page-transition";
 import { formatPrice } from "@/lib/format";
 import { retrieveCheckoutSession } from "@/lib/stripe";
 

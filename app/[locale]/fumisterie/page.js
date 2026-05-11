@@ -1,7 +1,7 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
 
 import { CatalogueGrid } from "@/components/catalogue-grid";
-import { Link } from "@/i18n/navigation";
+import { TransitionLink as Link } from "@/components/page-transition";
 import { allProducts } from "@/lib/products";
 
 export async function generateMetadata({ params }) {

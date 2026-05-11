@@ -1,6 +1,7 @@
 import { isMailerConfigured, sendEmail } from "@/lib/mailer";
 import { formatPrice } from "@/lib/format";
 import { getProductById } from "@/lib/products";
+import { getClientIp, rateLimit } from "@/lib/rate-limit";
 
 function generateOrderRef() {
   const ts = Date.now().toString(36).toUpperCase();
@@ -50,7 +51,7 @@ function buildCustomerPreorderEmail({ firstName, lastName, product, quantity, to
           </table>
 
           <p style="margin:0 0 8px;font-size:15px;line-height:1.7;color:#6b6060;">
-            ${product.deliveryLabel}
+            ${product.shippingLabel ?? "Livraison offerte en France & UE"}
           </p>
 
           <div style="margin:28px 0;padding:20px;background:#1d1c18;color:#ffffff;">
@@ -87,7 +88,7 @@ function buildCustomerPreorderEmail({ firstName, lastName, product, quantity, to
 
           <p style="margin:0;font-size:14px;line-height:1.7;color:#6d675a;">
             Des questions ? Répondez directement à cet email ou écrivez-nous à
-            <a href="mailto:bonjour@nuko.example" style="color:#7b5d3f;">bonjour@nuko.example</a>.
+            <a href="mailto:${process.env.CONTACT_RECEIVER_EMAIL || process.env.SHOP_NOTIFICATION_EMAIL || ''}" style="color:#7b5d3f;">${process.env.CONTACT_RECEIVER_EMAIL || process.env.SHOP_NOTIFICATION_EMAIL || 'notre équipe'}</a>.
           </p>
         </div>
         <div style="padding:20px 32px;background:#f6f3ee;color:#6d675a;font-size:12px;line-height:1.6;">
@@ -122,6 +123,11 @@ function buildSellerPreorderEmail({ firstName, lastName, email, phone, product, 
 }
 
 export async function POST(request) {
+  const { success } = rateLimit(getClientIp(request), { limit: 3, windowMs: 60_000 });
+  if (!success) {
+    return Response.json({ error: "Trop de requêtes. Veuillez patienter." }, { status: 429 });
+  }
+
   try {
     const body = await request.json();
     const { productId, quantity, firstName, lastName, email, phone, address, city, postalCode, country, message } = body;
@@ -136,7 +142,7 @@ export async function POST(request) {
     }
 
     const qty = Math.max(1, Math.floor(Number(quantity) || 1));
-    const totalPrice = product.preorderPrice * qty;
+    const totalPrice = product.price * qty;
     const orderRef = generateOrderRef();
     const bank = getBankDetails();
 

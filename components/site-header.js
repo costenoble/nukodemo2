@@ -1,10 +1,11 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 
 import { useCart } from "@/components/cart-provider";
-import { Link, usePathname, useRouter } from "@/i18n/navigation";
+import { TransitionLink } from "@/components/page-transition";
+import { usePathname, useRouter } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 
 const navItems = [
@@ -37,11 +38,55 @@ export function SiteHeader() {
   const { count, hasHydrated } = useCart();
   const t = useTranslations("nav");
   const currentLocale = pathname.startsWith("/en") ? "en" : "fr";
+  const menuRef = useRef(null);
+  const hamburgerRef = useRef(null);
 
-  // Lock scroll when menu is open
   useEffect(() => {
     document.body.style.overflow = isMenuOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
+  }, [isMenuOpen]);
+
+  const handleKeyDown = useCallback((event) => {
+    if (!isMenuOpen) return;
+    if (event.key === "Escape") {
+      setIsMenuOpen(false);
+      hamburgerRef.current?.focus();
+      return;
+    }
+    if (event.key !== "Tab") return;
+
+    const focusable = menuRef.current?.querySelectorAll(
+      'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    );
+    if (!focusable || focusable.length === 0) return;
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    if (event.shiftKey) {
+      if (document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      }
+    } else {
+      if (document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+  }, [isMenuOpen]);
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [handleKeyDown]);
+
+  useEffect(() => {
+    if (isMenuOpen) {
+      setTimeout(() => {
+        menuRef.current?.querySelector("a, button")?.focus();
+      }, 50);
+    }
   }, [isMenuOpen]);
 
   function switchLocale(locale) {
@@ -57,9 +102,12 @@ export function SiteHeader() {
           {/* Hamburger (visible everywhere now) */}
           <div className="flex w-1/3 md:w-auto md:mr-8">
             <button
+              ref={hamburgerRef}
               className="relative flex h-8 w-8 flex-col items-center justify-center gap-1.5"
               onClick={() => setIsMenuOpen((c) => !c)}
-              aria-label="Menu"
+              aria-label={isMenuOpen ? "Fermer le menu" : "Ouvrir le menu"}
+              aria-expanded={isMenuOpen}
+              aria-controls="site-menu"
               type="button"
             >
               <span className={`block h-px w-5 bg-white transition-all duration-300 ${isMenuOpen ? "translate-y-2 rotate-45" : ""}`} />
@@ -70,13 +118,13 @@ export function SiteHeader() {
 
           {/* Logo — centré */}
           <div className="flex w-1/3 justify-center md:flex-1 md:justify-center">
-            <Link
+            <TransitionLink
               className="font-headline text-lg font-black uppercase tracking-[0.06em] text-white md:text-xl"
               href="/"
               onClick={() => setIsMenuOpen(false)}
             >
               CST
-            </Link>
+            </TransitionLink>
           </div>
 
           {/* Droite */}
@@ -101,37 +149,42 @@ export function SiteHeader() {
             </div>
 
             {/* Panier */}
-            <Link className="relative text-white transition-opacity hover:opacity-60" href="/panier" aria-label={t("cart")}>
+            <TransitionLink className="relative text-white transition-opacity hover:opacity-60" href="/panier" aria-label={t("cart")}>
               <CartIcon />
               {hasHydrated && count > 0 && (
                 <span className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-white text-[9px] font-bold leading-none text-black">
                   {count}
                 </span>
               )}
-            </Link>
+            </TransitionLink>
 
             {/* Précommander — desktop */}
-            <Link
+            <TransitionLink
               className="hidden border border-white/60 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.18em] text-white transition hover:border-white hover:bg-white hover:text-black md:inline-flex"
               href="/particulier"
             >
               {t("preorder")}
-            </Link>
+            </TransitionLink>
 
             {/* Précommander — mobile */}
-            <Link
+            <TransitionLink
               className="border border-white/50 px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.14em] text-white md:hidden"
               href="/particulier"
               onClick={() => setIsMenuOpen(false)}
             >
               {t("preorder")}
-            </Link>
+            </TransitionLink>
           </div>
         </div>
       </header>
 
       {/* ── Menu overlay plein écran ── */}
       <div
+        ref={menuRef}
+        id="site-menu"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Menu de navigation"
         className={`fixed inset-0 z-40 flex flex-col bg-black transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] ${
           isMenuOpen ? "translate-y-0" : "translate-y-full"
         }`}
@@ -148,7 +201,7 @@ export function SiteHeader() {
                   transitionDelay: isMenuOpen ? `${80 + i * 60}ms` : "0ms",
                 }}
               >
-                <Link
+                <TransitionLink
                   href={item.href}
                   onClick={() => setIsMenuOpen(false)}
                   className={`block py-3 font-headline text-5xl font-black uppercase tracking-[-0.03em] transition-all duration-500 md:text-7xl ${
@@ -159,7 +212,7 @@ export function SiteHeader() {
                   }}
                 >
                   {t(item.key)}
-                </Link>
+                </TransitionLink>
               </div>
             ))}
           </nav>
