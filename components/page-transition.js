@@ -13,55 +13,15 @@ export function usePageTransition() {
 }
 
 // ── Timing (ms) ─────────────────────────────────────────────────────────────
-const OVERLAY_ENTER = 600;
-const LOGO_DELAY    = 80;
-const LOGO_IN       = 480;
-const NAVIGATE_AT   = 400;
+const OVERLAY_ENTER = 450;
+const LOGO_DELAY    = 60;
+const LOGO_IN       = 340;
+const NAVIGATE_AT   = 300;
 const HOLD          = 50;
-const LOGO_EXIT     = 220;
-const OVERLAY_EXIT  = 680;
+const LOGO_EXIT     = 180;
+const OVERLAY_EXIT  = 400;
 const EASE = "cubic-bezier(0.76,0,0.24,1)";
 const EXIT_START = OVERLAY_ENTER + HOLD; // 650ms
-
-// ── Animate page titles in after overlay reveals the new page ────────────────
-function animateTitlesIn() {
-  const raw = document.querySelectorAll(
-    ".page-title, .eyebrow, [data-hero-badge], [data-hero-title], [data-hero-cta]"
-  );
-  const els = Array.from(new Set(Array.from(raw)));
-  if (!els.length) return;
-
-  // Cancel any running CSS animation and hard-set to hidden state
-  els.forEach(el => {
-    el.style.willChange  = "opacity, transform";
-    el.style.animation   = "none";
-    el.style.transition  = "none";
-    el.style.opacity     = "0";
-    el.style.transform   = "translateY(50px)";
-  });
-
-  // Double rAF: first frame commits the reset, second frame kicks the transition
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      els.forEach((el, i) => {
-        const delay = 0.05 + i * 0.07;
-        el.style.transition = `opacity 0.7s ease ${delay}s, transform 0.85s cubic-bezier(0.16,1,0.3,1) ${delay}s`;
-        el.style.opacity    = "1";
-        el.style.transform  = "translateY(0)";
-      });
-
-      setTimeout(() => {
-        els.forEach(el => {
-          el.style.willChange = "";
-          el.style.animation  = "";
-          el.style.transition = "";
-          el.style.opacity    = "";
-          el.style.transform  = "";
-        });
-      }, 1400);
-    });
-  });
-}
 
 export function PageTransitionProvider({ children }) {
   const router          = useRouter();
@@ -88,10 +48,12 @@ export function PageTransitionProvider({ children }) {
         logo.style.transform  = "scale(1.12)";
       }
 
-      animateTitlesIn();
-
       overlay.style.transition = `transform ${OVERLAY_EXIT}ms ${EASE}`;
       overlay.style.transform  = "translateY(100%)";
+
+      // Release the gate so the new page's hero CSS keyframes start NOW,
+      // synced to the overlay reveal instead of fighting it.
+      document.documentElement.removeAttribute("data-transitioning");
 
       const doneTimer = setTimeout(() => {
         isAnimatingRef.current = false;
@@ -113,6 +75,10 @@ export function PageTransitionProvider({ children }) {
     (href) => {
       if (isAnimatingRef.current) return;
       isAnimatingRef.current = true;
+
+      // Gate hero anims on the incoming page so they play in sync with the
+      // overlay reveal rather than running while the page is hidden.
+      document.documentElement.setAttribute("data-transitioning", "1");
 
       const overlay = overlayRef.current;
       const logo    = logoRef.current;

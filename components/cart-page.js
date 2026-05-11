@@ -58,7 +58,7 @@ export function CartPage() {
 
   return (
     <div className="page-shell page-section space-y-12">
-      <div className="space-y-4" data-hero-copy="">
+      <div className="space-y-4" data-reveal-stagger="">
         <p className="eyebrow" data-reveal-item="">{t("eyebrow")}</p>
         <h1 className="page-title" data-reveal-item="">{t("title")}</h1>
       </div>

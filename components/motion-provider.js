@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 function parseRange(value, fallbackStart, fallbackEnd) {
   if (!value) {
@@ -18,74 +18,81 @@ function parseRange(value, fallbackStart, fallbackEnd) {
   ];
 }
 
+// Module-level singletons so navigation between routes never reinstantiates
+// the scroll engine or re-registers the plugin.
+let motionLibsPromise = null;
+let locomotiveInstance = null;
+
+function loadMotionLibs() {
+  if (!motionLibsPromise) {
+    motionLibsPromise = Promise.all([
+      import("gsap"),
+      import("gsap/ScrollTrigger"),
+      import("locomotive-scroll")
+    ]).then(([gsapMod, stMod, locoMod]) => {
+      const gsap = gsapMod.default;
+      const ScrollTrigger = stMod.ScrollTrigger;
+      gsap.registerPlugin(ScrollTrigger);
+      return { gsap, ScrollTrigger, LocomotiveScroll: locoMod.default };
+    });
+  }
+  return motionLibsPromise;
+}
+
 export function MotionProvider({ children }) {
   const pathname = usePathname();
+  const libsRef = useRef(null);
 
+  // ── Effect A: init scroll engine ONCE for the lifetime of the app ─────────
   useEffect(() => {
-    let isCancelled = false;
-    let cleanup = () => {};
+    let cancelled = false;
 
-    async function initMotion() {
+    loadMotionLibs().then((libs) => {
+      if (cancelled) return;
+      libsRef.current = libs;
+
       const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const [{ default: gsap }, { ScrollTrigger }, { default: LocomotiveScroll }] =
-        await Promise.all([
-          import("gsap"),
-          import("gsap/ScrollTrigger"),
-          import("locomotive-scroll")
-        ]);
 
-      if (isCancelled) {
-        return;
-      }
-
-      gsap.registerPlugin(ScrollTrigger);
-
-      let locomotive = null;
-
-      if (!prefersReducedMotion && window.innerWidth >= 1024) {
-        locomotive = new LocomotiveScroll({
+      if (!locomotiveInstance && !prefersReducedMotion && window.innerWidth >= 1024) {
+        locomotiveInstance = new libs.LocomotiveScroll({
           lenisOptions: {
             lerp: 0.12,
             duration: 1.1,
             smoothWheel: true,
             wheelMultiplier: 0.92
           },
-          scrollCallback: () => ScrollTrigger.update()
+          scrollCallback: () => libs.ScrollTrigger.update()
         });
       }
+    });
 
-      const context = gsap.context(() => {
-        if (prefersReducedMotion) {
-          return;
-        }
+    return () => {
+      cancelled = true;
+      // Intentionally do NOT destroy locomotive on unmount — the provider lives
+      // for the whole app, and we want the scroll engine to persist across
+      // route changes for buttery transitions.
+    };
+  }, []);
 
-        const heroBlocks = gsap.utils.toArray("[data-hero-copy]");
-        heroBlocks.forEach((block) => {
-          const items = block.querySelectorAll("[data-reveal-item]");
+  // ── Effect B: (re)build GSAP triggers on every route change ──────────────
+  useEffect(() => {
+    let cancelled = false;
+    let context = null;
 
-          if (!items.length) {
-            return;
-          }
+    loadMotionLibs().then(({ gsap, ScrollTrigger }) => {
+      if (cancelled) return;
 
-          gsap.from(items, {
-            autoAlpha: 0,
-            y: 36,
-            duration: 1.05,
-            ease: "power3.out",
-            stagger: 0.12,
-            clearProps: "all"
-          });
-        });
+      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (prefersReducedMotion) return;
 
+      context = gsap.context(() => {
         const revealElements = gsap.utils.toArray("[data-reveal]");
         revealElements.forEach((element) => {
           gsap.from(element, {
             autoAlpha: 0,
-            y: 34,
-            filter: "blur(10px)",
-            duration: 1,
+            y: 28,
+            duration: 0.7,
             ease: "power3.out",
-            clearProps: "filter",
             scrollTrigger: {
               trigger: element,
               start: "top 84%",
@@ -97,19 +104,14 @@ export function MotionProvider({ children }) {
         const staggerGroups = gsap.utils.toArray("[data-reveal-stagger]");
         staggerGroups.forEach((group) => {
           const items = group.querySelectorAll("[data-reveal-item]");
-
-          if (!items.length) {
-            return;
-          }
+          if (!items.length) return;
 
           gsap.from(items, {
             autoAlpha: 0,
-            y: 28,
-            filter: "blur(8px)",
-            duration: 0.9,
+            y: 24,
+            duration: 0.65,
             ease: "power3.out",
-            stagger: 0.1,
-            clearProps: "filter",
+            stagger: 0.08,
             scrollTrigger: {
               trigger: group,
               start: "top 80%",
@@ -129,7 +131,7 @@ export function MotionProvider({ children }) {
             {
               autoAlpha: 1,
               clipPath: "inset(0% 0% 0% 0%)",
-              duration: 1.2,
+              duration: 1.1,
               ease: "power3.out",
               scrollTrigger: {
                 trigger: element,
@@ -145,68 +147,36 @@ export function MotionProvider({ children }) {
           const variant = section.dataset.sectionTransition ?? "lift";
           const start = section.dataset.sectionStart ?? "top 76%";
           const baseConfig = {
-            duration: 1.15,
+            duration: 1,
             ease: "power3.out",
-            clearProps: "clipPath",
-            scrollTrigger: {
-              trigger: section,
-              start,
-              once: true
-            }
+            scrollTrigger: { trigger: section, start, once: true }
           };
 
           switch (variant) {
             case "curtain":
               gsap.fromTo(
                 section,
-                {
-                  autoAlpha: 0,
-                  y: 42,
-                  clipPath: "inset(0% 0% 18% 0%)"
-                },
-                {
-                  ...baseConfig,
-                  autoAlpha: 1,
-                  y: 0,
-                  clipPath: "inset(0% 0% 0% 0%)"
-                }
+                { autoAlpha: 0, y: 36, clipPath: "inset(0% 0% 18% 0%)" },
+                { ...baseConfig, autoAlpha: 1, y: 0, clipPath: "inset(0% 0% 0% 0%)" }
               );
               break;
             case "drift-left":
-              gsap.from(section, {
-                ...baseConfig,
-                autoAlpha: 0,
-                x: 72
-              });
+              gsap.from(section, { ...baseConfig, autoAlpha: 0, x: 60 });
               break;
             case "drift-right":
-              gsap.from(section, {
-                ...baseConfig,
-                autoAlpha: 0,
-                x: -72
-              });
+              gsap.from(section, { ...baseConfig, autoAlpha: 0, x: -60 });
               break;
             case "press-in":
-              gsap.from(section, {
-                ...baseConfig,
-                autoAlpha: 0,
-                y: 28,
-                scale: 0.96
-              });
+              gsap.from(section, { ...baseConfig, autoAlpha: 0, y: 24, scale: 0.96 });
               break;
             default:
-              gsap.from(section, {
-                ...baseConfig,
-                autoAlpha: 0,
-                y: 48
-              });
+              gsap.from(section, { ...baseConfig, autoAlpha: 0, y: 40 });
           }
         });
 
         const scrubYElements = gsap.utils.toArray("[data-scrub-y]");
         scrubYElements.forEach((element) => {
           const [startY, endY] = parseRange(element.dataset.scrubY, -12, 12);
-
           gsap.fromTo(
             element,
             { yPercent: startY },
@@ -226,7 +196,6 @@ export function MotionProvider({ children }) {
         const scrubXElements = gsap.utils.toArray("[data-scrub-x]");
         scrubXElements.forEach((element) => {
           const [startX, endX] = parseRange(element.dataset.scrubX, -6, 6);
-
           gsap.fromTo(
             element,
             { xPercent: startX },
@@ -246,7 +215,6 @@ export function MotionProvider({ children }) {
         const scrubScaleElements = gsap.utils.toArray("[data-scrub-scale]");
         scrubScaleElements.forEach((element) => {
           const [startScale, endScale] = parseRange(element.dataset.scrubScale, 1.12, 1);
-
           gsap.fromTo(
             element,
             { scale: startScale },
@@ -264,22 +232,14 @@ export function MotionProvider({ children }) {
         });
       });
 
-      requestAnimationFrame(() => {
-        ScrollTrigger.refresh();
-      });
-
-      cleanup = () => {
-        context.revert();
-        ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
-        locomotive?.destroy();
-      };
-    }
-
-    initMotion();
+      requestAnimationFrame(() => ScrollTrigger.refresh());
+    });
 
     return () => {
-      isCancelled = true;
-      cleanup();
+      cancelled = true;
+      if (context) {
+        context.revert();
+      }
     };
   }, [pathname]);
 
