@@ -1,37 +1,24 @@
-"use client";
-
 import Image from "next/image";
-import { useEffect, useRef } from "react";
 
 export function ParallaxHero({ src, alt, imageClassName = "" }) {
-  const ref = useRef(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    function onScroll() {
-      el.style.transform = `scale(1.08) translateY(${window.scrollY * 0.12}px)`;
-    }
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
   return (
-    <div
-      ref={ref}
-      className="absolute inset-0"
-      style={{ transform: "scale(1.08)", willChange: "transform" }}
-    >
-      <Image
-        src={src}
-        alt={alt}
-        fill
-        priority
-        sizes="100vw"
-        className={`object-cover ${imageClassName}`}
-      />
+    // Outer div extends beyond section bounds to give room for parallax movement
+    <div className="absolute" style={{ inset: "-12%", willChange: "transform" }}>
+      {/* GSAP animates yPercent via data-scrub-y — compatible with Locomotive Scroll */}
+      <div
+        data-scrub-y="-8, 8"
+        className="absolute inset-0"
+        style={{ willChange: "transform" }}
+      >
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          priority
+          sizes="100vw"
+          className={`object-cover ${imageClassName}`}
+        />
+      </div>
     </div>
   );
 }
