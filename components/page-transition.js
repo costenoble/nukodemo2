@@ -26,32 +26,35 @@ const EASE = "cubic-bezier(0.76,0,0.24,1)";
 const EXIT_START = OVERLAY_ENTER + HOLD; // 900ms
 
 function animateTitlesIn() {
-  const els = document.querySelectorAll(".page-title, .eyebrow");
-  els.forEach((el, i) => {
-    // Reset to hidden while still under the overlay
+  const els = document.querySelectorAll(".page-title, .eyebrow, [data-hero-badge], [data-hero-title], [data-hero-cta]");
+  // Deduplicate (an element can match multiple selectors)
+  const unique = [...new Set(els)];
+
+  unique.forEach((el) => {
+    // Cancel any running CSS keyframe animation so it doesn't fight the transition
+    el.style.animation  = "none";
     el.style.transition = "none";
     el.style.opacity    = "0";
     el.style.transform  = "translateY(50px)";
   });
 
-  // Kick off animation on next frame (overlay is already moving away)
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
-      els.forEach((el, i) => {
+      unique.forEach((el, i) => {
         const delay = 0.05 + i * 0.07;
         el.style.transition = `opacity 0.7s ease ${delay}s, transform 0.85s cubic-bezier(0.16,1,0.3,1) ${delay}s`;
         el.style.opacity    = "1";
         el.style.transform  = "translateY(0)";
       });
 
-      // Clean up inline styles after animation so nothing is left dangling
       setTimeout(() => {
-        els.forEach(el => {
+        unique.forEach(el => {
+          el.style.animation  = "";
           el.style.transition = "";
           el.style.opacity    = "";
           el.style.transform  = "";
         });
-      }, 1200);
+      }, 1400);
     });
   });
 }

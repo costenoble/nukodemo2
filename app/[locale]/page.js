@@ -24,15 +24,15 @@ export default async function HomePage({ params }) {
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" />
 
         <div className="relative flex flex-1 flex-col justify-end px-6 pb-20 pt-24 text-white md:px-10 md:pb-28 md:pt-28">
-          <p className="mb-6 text-[11px] font-bold uppercase tracking-[0.28em] text-white/50">
+          <p data-hero-badge className="mb-6 text-[11px] font-bold uppercase tracking-[0.28em] text-white/50">
             {t("heroBadge")}
           </p>
-          <h1 className="page-title max-w-5xl text-white">
+          <h1 data-hero-title className="page-title max-w-5xl text-white">
             {t("heroTitle").split("\n").map((line, i) => (
               <span key={i}>{i > 0 && <br />}{line}</span>
             ))}
           </h1>
-          <div className="mt-10 flex flex-wrap items-center gap-4">
+          <div data-hero-cta className="mt-10 flex flex-wrap items-center gap-4">
             <Link
               className="border border-white px-7 py-4 text-[11px] font-bold uppercase tracking-[0.2em] text-white transition hover:bg-white hover:text-black"
               href="/particulier"
