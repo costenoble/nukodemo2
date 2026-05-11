@@ -9,6 +9,7 @@ import { usePathname, useRouter } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 
 const navItems = [
+  { href: "/", key: "home" },
   { href: "/particulier", key: "stoves" },
   { href: "/fumisterie", key: "fumisterie" },
   { href: "/histoire", key: "story" },
