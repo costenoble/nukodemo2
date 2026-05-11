@@ -12,35 +12,38 @@ export function usePageTransition() {
   return ctx;
 }
 
-// ── Timing constants (ms) ──────────────────────────────────────────────────
-const OVERLAY_ENTER   = 600;  // overlay slides up
-const LOGO_DELAY      = 80;   // logo starts animating after overlay begins
-const LOGO_IN         = 500;  // logo entrance duration
-const NAVIGATE_AT     = 400;  // when router.push fires (page loads under overlay)
-const HOLD            = 50;   // black screen hold after overlay fully covers
-const LOGO_EXIT       = 250;  // logo fade-out duration
-const OVERLAY_EXIT    = 700;  // overlay slides down
+// ── Timing (ms) ─────────────────────────────────────────────────────────────
+const OVERLAY_ENTER = 600;
+const LOGO_DELAY    = 80;
+const LOGO_IN       = 480;
+const NAVIGATE_AT   = 400;
+const HOLD          = 50;
+const LOGO_EXIT     = 220;
+const OVERLAY_EXIT  = 680;
 const EASE = "cubic-bezier(0.76,0,0.24,1)";
+const EXIT_START = OVERLAY_ENTER + HOLD; // 650ms
 
-// Start of overlay exit phase (after enter + hold)
-const EXIT_START = OVERLAY_ENTER + HOLD; // 900ms
-
+// ── Animate page titles in after overlay reveals the new page ────────────────
 function animateTitlesIn() {
-  const els = document.querySelectorAll(".page-title, .eyebrow, [data-hero-badge], [data-hero-title], [data-hero-cta]");
-  // Deduplicate (an element can match multiple selectors)
-  const unique = [...new Set(els)];
+  const raw = document.querySelectorAll(
+    ".page-title, .eyebrow, [data-hero-badge], [data-hero-title], [data-hero-cta]"
+  );
+  const els = Array.from(new Set(Array.from(raw)));
+  if (!els.length) return;
 
-  unique.forEach((el) => {
-    // Cancel any running CSS keyframe animation so it doesn't fight the transition
-    el.style.animation  = "none";
-    el.style.transition = "none";
-    el.style.opacity    = "0";
-    el.style.transform  = "translateY(50px)";
+  // Cancel any running CSS animation and hard-set to hidden state
+  els.forEach(el => {
+    el.style.willChange  = "opacity, transform";
+    el.style.animation   = "none";
+    el.style.transition  = "none";
+    el.style.opacity     = "0";
+    el.style.transform   = "translateY(50px)";
   });
 
+  // Double rAF: first frame commits the reset, second frame kicks the transition
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
-      unique.forEach((el, i) => {
+      els.forEach((el, i) => {
         const delay = 0.05 + i * 0.07;
         el.style.transition = `opacity 0.7s ease ${delay}s, transform 0.85s cubic-bezier(0.16,1,0.3,1) ${delay}s`;
         el.style.opacity    = "1";
@@ -48,7 +51,8 @@ function animateTitlesIn() {
       });
 
       setTimeout(() => {
-        unique.forEach(el => {
+        els.forEach(el => {
+          el.style.willChange = "";
           el.style.animation  = "";
           el.style.transition = "";
           el.style.opacity    = "";
@@ -76,31 +80,25 @@ export function PageTransitionProvider({ children }) {
     const logo    = logoRef.current;
     if (!overlay) return;
 
-    // Wait for the full enter + hold before exiting
     const exitTimer = setTimeout(() => {
-      // Fade logo out while overlay starts moving
+      // Logo exits: scale up + fade out (GPU-only, no reflow)
       if (logo) {
-        logo.style.transition = `opacity ${LOGO_EXIT}ms ease, letter-spacing ${LOGO_EXIT}ms ease, transform ${LOGO_EXIT}ms ease`;
-        logo.style.opacity      = "0";
-        logo.style.letterSpacing = "0.3em";
-        logo.style.transform    = "scale(0.95)";
+        logo.style.transition = `opacity ${LOGO_EXIT}ms ease, transform ${LOGO_EXIT}ms ease`;
+        logo.style.opacity    = "0";
+        logo.style.transform  = "scale(1.12)";
       }
 
-      // Animate page titles (reset + slide up from below)
       animateTitlesIn();
 
-      // Slide overlay down
       overlay.style.transition = `transform ${OVERLAY_EXIT}ms ${EASE}`;
       overlay.style.transform  = "translateY(100%)";
 
       const doneTimer = setTimeout(() => {
         isAnimatingRef.current = false;
-        // Reset logo for next use
         if (logo) {
-          logo.style.transition    = "none";
-          logo.style.opacity       = "0";
-          logo.style.letterSpacing = "0.5em";
-          logo.style.transform     = "scale(1.05)";
+          logo.style.transition = "none";
+          logo.style.opacity    = "0";
+          logo.style.transform  = "scale(0.88)";
         }
       }, OVERLAY_EXIT);
 
@@ -110,7 +108,7 @@ export function PageTransitionProvider({ children }) {
     return () => clearTimeout(exitTimer);
   }, [pathname]);
 
-  // ── Phase 1: click → overlay slides up, logo animates in ─────────────────
+  // ── Phase 1: navigate → overlay slides up, logo animates in ──────────────
   const navigate = useCallback(
     (href) => {
       if (isAnimatingRef.current) return;
@@ -125,29 +123,26 @@ export function PageTransitionProvider({ children }) {
         return;
       }
 
-      // Reset logo to wide/invisible start state
+      // Reset logo to start state (small, hidden) — no transition so it's instant
       if (logo) {
-        logo.style.transition    = "none";
-        logo.style.opacity       = "0";
-        logo.style.letterSpacing = "0.5em";
-        logo.style.transform     = "scale(1.05)";
+        logo.style.transition = "none";
+        logo.style.opacity    = "0";
+        logo.style.transform  = "scale(0.88)";
       }
 
-      // Slide overlay up
+      // Slide overlay up (GPU transform only)
       overlay.style.transition = `transform ${OVERLAY_ENTER}ms ${EASE}`;
       overlay.style.transform  = "translateY(0)";
 
-      // Logo enters: compress letter-spacing + fade in
+      // Logo enters: scale up + fade in (GPU-only)
       const logoTimer = setTimeout(() => {
         if (logo) {
-          logo.style.transition    = `opacity ${LOGO_IN}ms cubic-bezier(0.16,1,0.3,1), letter-spacing ${LOGO_IN}ms cubic-bezier(0.16,1,0.3,1), transform ${LOGO_IN}ms cubic-bezier(0.16,1,0.3,1)`;
-          logo.style.opacity       = "1";
-          logo.style.letterSpacing = "-0.04em";
-          logo.style.transform     = "scale(1)";
+          logo.style.transition = `opacity ${LOGO_IN}ms cubic-bezier(0.16,1,0.3,1), transform ${LOGO_IN}ms cubic-bezier(0.16,1,0.3,1)`;
+          logo.style.opacity    = "1";
+          logo.style.transform  = "scale(1)";
         }
       }, LOGO_DELAY);
 
-      // Navigate while overlay is covering the page
       const navTimer = setTimeout(() => router.push(href), NAVIGATE_AT);
 
       return () => {
@@ -166,17 +161,20 @@ export function PageTransitionProvider({ children }) {
         ref={overlayRef}
         aria-hidden="true"
         className="pointer-events-none fixed inset-0 z-[200] flex items-center justify-center bg-black"
-        style={{ transform: "translateY(100%)", willChange: "transform" }}
+        style={{
+          transform: "translateY(100%)",
+          willChange: "transform",
+        }}
       >
         <span
           ref={logoRef}
           className="select-none font-headline font-black uppercase text-white"
           style={{
-            fontSize:      "clamp(80px, 20vw, 280px)",
-            lineHeight:    1,
-            opacity:       0,
-            letterSpacing: "0.5em",
-            transform:     "scale(1.05)",
+            fontSize:   "clamp(80px, 20vw, 280px)",
+            lineHeight: 1,
+            opacity:    0,
+            transform:  "scale(0.88)",
+            willChange: "opacity, transform",
           }}
         >
           CST
@@ -186,12 +184,21 @@ export function PageTransitionProvider({ children }) {
   );
 }
 
+// ── TransitionLink ────────────────────────────────────────────────────────────
 export function TransitionLink({ href, children, onClick, ...props }) {
   const { navigate } = usePageTransition();
+  const router = useRouter();
 
   const isExternal =
     typeof href === "string" &&
     (href.startsWith("http") || href.startsWith("mailto:") || href.startsWith("tel:"));
+
+  // Prefetch eagerly on hover so the page is ready before the animation ends
+  function handleMouseEnter() {
+    if (!isExternal && typeof href === "string") {
+      router.prefetch(href);
+    }
+  }
 
   function handleClick(e) {
     if (isExternal) { onClick?.(); return; }
@@ -205,7 +212,7 @@ export function TransitionLink({ href, children, onClick, ...props }) {
   }
 
   return (
-    <Link href={href} onClick={handleClick} {...props}>
+    <Link href={href} onClick={handleClick} onMouseEnter={handleMouseEnter} {...props}>
       {children}
     </Link>
   );
